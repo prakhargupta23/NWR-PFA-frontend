@@ -22,7 +22,6 @@ import { Chart, registerables } from "chart.js";
 import AiChat from "../modules/AiChat";
 import Delete from "@mui/icons-material/Delete";
 import Papa from "papaparse";
-import Basic from "../Components/Basic";
 import DynamicFormModal from "../modules/PromptModal";
 
 import { CsvModal } from "../modules/CsvModal";
