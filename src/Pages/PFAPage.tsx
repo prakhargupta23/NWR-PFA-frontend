@@ -406,11 +406,7 @@ export default function PFAPage() {
           <Grid
             item
             xs={12}
-            md={
-              categoryType === "Earning" || categoryType === "Expenditure"
-                ? 5
-                : 6
-            }
+            md={5}
             sx={{
               display: "flex",
               flexDirection: "column",
@@ -503,7 +499,7 @@ export default function PFAPage() {
           </Grid>
           
           {/* Leaderboard and News Feed section - only shown for Expenditure and Earning */}
-          {(categoryType === "Expenditure" || categoryType === "Earning") && (
+          {(categoryType === "Expenditure" || categoryType === "Earning") ? (
             <Grid
               item
               xs={12}
@@ -547,17 +543,49 @@ export default function PFAPage() {
                 </Box>
               </Box>
             </Grid>
+          ) : (
+            <Grid
+              item
+              xs={12}
+              md={3}
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "center",
+                alignItems: "center",
+                height: "100%",
+                width: "100%",
+                overflowY: "auto",
+                overflowX: "hidden",
+                "&::-webkit-scrollbar": {
+                  display: "none",
+                },
+                "&": {
+                  msOverflowStyle: "none",
+                  scrollbarWidth: "none",
+                },
+              }}
+            >
+              <Box
+                sx={{
+                  display: "flex",
+                  flexDirection: "column",
+                  height: "100%",
+                  width: "100%",
+                }}
+              >
+                <Box sx={{ flex: 1, overflow: "hidden" }}>
+                  <NewsFeed />
+                </Box>
+              </Box>
+            </Grid>
           )}
           
           {/* Chat Section */}
           <Grid
             item
             xs={12}
-            md={
-              categoryType === "Earning" || categoryType === "Expenditure"
-                ? 4
-                : 6
-            }
+            md={4}
             sx={{
               display: "flex",
               flexDirection: "column",

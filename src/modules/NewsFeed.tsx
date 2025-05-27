@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   Box,
   Typography,
@@ -7,56 +7,59 @@ import {
   Divider,
   List,
   ListItem,
-  ListItemText,
+  CircularProgress,
 } from "@mui/material";
 
 interface NewsItem {
   title: string;
-  summary: string;
+  description: string;
   source: string;
   publishedAt: string;
-  link: string; // Added a link to each news item
+  link: string;
 }
 
-const mockNews: NewsItem[] = [
-  {
-    title: "IRCTC Char Dham Yatra: Bharat Gaurav Deluxe Train Launch",
-    summary:
-      "IRCTC is launching a Char Dham Yatra from May 27, 2025, from Delhi Safdarjung, right after Badrinath Dham opens.",
-    source: "ET Now",
-    publishedAt: "May 4, 2025",
-    link: "https://www.etnownews.com/infrastructure/irctc-char-dham-yatra-indian-railways-to-operate-bharat-gaurav-deluxe-ac-tourist-train-check-date-destinations-and-more-article-151558070",
-  },
-  {
-    title: "Chhota Bheem Joins Railways to Promote Safety",
-    summary:
-      "Indian Railways teams up with 'Chhota Bheem' for a safety campaign, launched at the WAVES event in Mumbai.",
-    source: "The Daily Pioneer",
-    publishedAt: "May 4, 2025",
-    link: "https://www.dailypioneer.com/2025/pioneer-exclusive/chhota-bheem-waves-safety-for-youngsters-on-indian-railways.html",
-  },
-  {
-    title: "Mizoram’s Rail Connectivity: First Trial Run to Sairang",
-    summary:
-      "Northeast Frontier Railway conducts its first trial run to Sairang, marking a milestone for Mizoram’s rail connection.",
-    source: "Swarajya Mag",
-    publishedAt: "May 4, 2025",
-    link: "https://swarajyamag.com/news-brief/mizoram-set-to-get-capital-rail-connectivity-as-northeast-frontier-railway-conducts-first-trial-run-to-aizawls-sairang",
-  },
-];
-
 const NewsFeed: React.FC = () => {
+  const [news, setNews] = useState<NewsItem[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+
+  useEffect(() => {
+    const fetchNews = async () => {
+      try {
+        const response = await fetch(
+          `https://api.thenewsapi.com/v1/news/all?api_token=j4YeXQmMNtWhsobLh7Uqe7LdyRustvLb6HBWyW1x&search=%22Indian%20Railways%22%20OR%20IRCTC&language=en&limit=10`
+        );
+        const data = await response.json();
+
+        const formattedNews = data.data.map((item: any) => ({
+          title: item.title,
+          description: item.description,
+          source: item.source,
+          publishedAt: new Date(item.published_at).toDateString(),
+          link: item.url,
+        }));
+
+        setNews(formattedNews);
+      } catch (error) {
+        console.error("Error fetching news:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchNews();
+  }, []);
+
   return (
     <Box
       sx={{
         background: "rgba(56, 38, 96, 0.9)",
         border: "1px solid #B72BF8",
         borderRadius: 2,
-        height: "95%", // Full height of container
-        display: "flex", // Enables layout stretching
+        height: "95%",
+        display: "flex",
         flexDirection: "column",
-        overflow: "hidden", // Prevent scrollbars from escaping
-        boxSizing: "border-box", // Ensures border is respected
+        overflow: "hidden",
+        boxSizing: "border-box",
       }}
     >
       <Box sx={{ py: 2, borderBottom: "1px solid rgba(255,255,255,0.2)" }}>
@@ -70,63 +73,91 @@ const NewsFeed: React.FC = () => {
         sx={{
           px: 1,
           overflowY: "auto",
-          flex: 1, // <--- This makes List grow and allow scrolling
+          flex: 1,
         }}
       >
-        {mockNews.map((item, index) => (
-          <React.Fragment key={index}>
-            <ListItem alignItems="flex-start" sx={{ px: 0 }}>
-              <Card
-                sx={{
-                  backgroundColor: "rgba(255,255,255,0.05)",
-                  width: "100%",
-                  boxShadow: "none",
-                }}
-              >
-                <CardContent>
-                  <Typography
-                    variant="subtitle1"
-                    fontWeight={600}
-                    gutterBottom
-                    color={"white"}
-                    component="a" // Make title clickable
-                    href={item.link} // Link to the news article
-                    target="_blank" // Open in new tab
-                    rel="noopener noreferrer" // Security best practice for external links
-                    sx={{
-                      textDecoration: "underline", // Adds underline to make it look like a link
-                      color: "white",
-                      cursor: "pointer", // Makes the cursor look like a hand on hover
-                      "&:hover": {
-                        color: "#B72BF8", // Changes color when hovered
-                        textDecoration: "underline", // Ensures the underline stays on hover
-                      },
-                    }}
-                  >
-                    {item.title}
-                  </Typography>
+        {loading ? (
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              height: "100%",
+              py: 5,
+            }}
+          >
+            <CircularProgress color="secondary" />
+          </Box>
+        ) : (
+          news.map((item, index) => (
+            <React.Fragment key={index}>
+              <ListItem alignItems="flex-start" sx={{ px: 0 }}>
+                <Card
+                  sx={{
+                    backgroundColor: "rgba(255,255,255,0.05)",
+                    width: "100%",
+                    boxShadow: "none",
+                  }}
+                >
+                  <CardContent>
+                    <Typography
+                      variant="subtitle1"
+                      fontWeight={600}
+                      component="a"
+                      href={item.link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      sx={{
+                        textDecoration: "underline",
+                        color: "white",
+                        cursor: "pointer",
+                        "&:hover": {
+                          color: "#B72BF8",
+                        },
+                      }}
+                    >
+                      {item.title}
+                    </Typography>
 
-                  <Typography variant="body2" color="rgba(255,255,255,0.8)">
-                    {item.summary}
-                  </Typography>
-                  <Typography
-                    variant="caption"
-                    sx={{
-                      display: "block",
-                      mt: 1,
-                      color: "rgba(255,255,255,0.5)",
-                    }}
-                  >
-                    {item.source} • {item.publishedAt}
-                  </Typography>
-                </CardContent>
-              </Card>
-            </ListItem>
-            {index < mockNews.length - 1 && (
-              <Divider sx={{ my: 1, borderColor: "rgba(255,255,255,0.1)" }} />
-            )}
-          </React.Fragment>
-        ))}
+                    {/* <Typography
+                      variant="caption"
+                      sx={{
+                        display: "block",
+                        color: "#aaa",
+                        mt: 0.5,
+                        wordBreak: "break-all",
+                      }}
+                    >
+                      {item.link}
+                    </Typography> */}
+
+                    <Typography
+                      variant="body2"
+                      color="rgba(255,255,255,0.8)"
+                      sx={{ mt: 1 }}
+                    >
+                      {item.description}
+                    </Typography>
+
+                    <Typography
+                      variant="caption"
+                      sx={{
+                        display: "block",
+                        mt: 1,
+                        color: "rgba(255,255,255,0.5)",
+                      }}
+                    >
+                      {item.source} • {item.publishedAt}
+                    </Typography>
+                  </CardContent>
+                </Card>
+              </ListItem>
+              {index < news.length - 1 && (
+                <Divider sx={{ my: 1, borderColor: "rgba(255,255,255,0.1)" }} />
+              )}
+            </React.Fragment>
+          ))
+        )}
       </List>
     </Box>
   );
