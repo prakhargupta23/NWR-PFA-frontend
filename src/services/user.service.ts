@@ -18,6 +18,16 @@ export const userService = {
   },
 };
 // Function to fetch user data from localStorage
+export function getUserData() {
+  console.log("getUserData called");
+  const userData = localStorage.getItem("user");
+  if (userData) {
+    console.log("User data found in localStorage:", userData);
+    return JSON.parse(userData);
+  }
+  console.log("No user data found in localStorage");
+  return null; // Return null if no user data is found
+}
 
 //// Funciton for creating new experiments ---------------------------/
 async function login(username: string, password: string) {
@@ -29,7 +39,7 @@ async function login(username: string, password: string) {
   });
   console.log("respons ofscjnadskze",response)
 
-  localStorage.setItem("user", JSON.stringify({ jwt: response.data.jwt }));
+  localStorage.setItem("user", JSON.stringify({ jwt: response.data.jwt, username: username }));
   let user = {
     jwt: response.data.jwt,
     role: response.data.role,

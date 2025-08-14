@@ -4,6 +4,8 @@ import { createBrowserRouter } from "react-router-dom";
 import LoginPage from "../Pages/LoginPage";
 import PrivateRoute from "./PrivateRoute";
 import PFAPage from "../Pages/PFAPage";
+import Workshop from "../Pages/Workshop";
+import VantaBackground from "../modules/Bird-bg"
 
 export const routes = createBrowserRouter([
   // {
@@ -26,4 +28,12 @@ export const routes = createBrowserRouter([
       </PrivateRoute>
     ),
   },
+  {
+    path: "/workshop",
+    element: (
+      <PrivateRoute>
+        <Workshop />
+      </PrivateRoute>
+    ),
+  }
 ]);

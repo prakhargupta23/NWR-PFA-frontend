@@ -171,8 +171,8 @@ function MultiDivisionMetricBarGraph({
   });
 
   if (!data || data.length === 0) return null;
-  console.log("this i sdata");
-  console.log(data);
+  // console.log("this i sdata");
+  // console.log(data);
 
   // Get all metric keys (excluding 'division')
   const keys = Object.keys(data[0]).filter((k) => k !== "division");

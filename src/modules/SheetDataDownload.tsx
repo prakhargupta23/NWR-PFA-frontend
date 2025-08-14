@@ -48,12 +48,11 @@ const DownloadSheetsDoc: React.FC = () => {
       let img = require("../assets/railwayLogo.jpg");
       const base64Image = await toBase64(img); // convert image to base64
       const date = getMonthYear(selectedMonth, selectedYear);
-
+      console.log("calling this function")
       const reportResponse: ReportData = await transactionService.getReportData(
         date
       );
       console.log("this is response");
-
       console.log(reportResponse);
 
       if (reportResponse.success) {

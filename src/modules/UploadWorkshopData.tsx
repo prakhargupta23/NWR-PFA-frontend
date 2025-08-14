@@ -16,8 +16,8 @@ import {
 import UploadIcon from "@mui/icons-material/Upload";
 import CloseIcon from "@mui/icons-material/Close";
 import { Download, Upload } from "@mui/icons-material";
-import { transactionService } from "../services/transaction.service";
-import { parseExcelFile } from "../utils/otherUtils";
+import { WorkshopService } from "../services/workshop.service";
+import { parseExcelFile } from "../utils/WorkshopUtils";
 import { divisions, months, sectionsForComment } from "../utils/staticDataUtis";
 import "react-quill/dist/quill.snow.css"; // Import styles
 import CommentEditor from "./Comment";
@@ -81,6 +81,7 @@ const TransactionModal = ({
         setSnackbarOpen(true);
         return;
       }
+      console.log("dsjfbdjs,",files.Transaction)
 
       setCsvLoading(true);
 
@@ -97,12 +98,12 @@ const TransactionModal = ({
 
         console.log("this is final data", finalData);
 
-        const [uploadResponse, commentResponse] = await Promise.all([
-          transactionService.uploadTransactionData(finalData),
-          commentService.uploadCommentData(enrichedData),
+        const [uploadResponse] = await Promise.all([
+          WorkshopService.uploadWorkshopData(finalData),
         ]);
+        // const uploadResponse = true;
 
-        if (uploadResponse.success && commentResponse.success) {
+        if (uploadResponse) {
           setSnackbarMessage("Files uploaded and parsed successfully!");
           setSnackbarOpen(true);
           setFiles({ Transaction: null });
@@ -112,9 +113,7 @@ const TransactionModal = ({
           handleClose();
           setReloadGraph(!reloadGraph);
         } else {
-          setSnackbarMessage(
-            "Failed to upload files. Please check the data format."
-          );
+          setSnackbarMessage("Failed to upload files. Please check the data format.");
           setSnackbarOpen(true);
         }
         setCsvLoading(false);
@@ -449,7 +448,7 @@ const TransactionModal = ({
                 ))}
               </Select>
             </Grid>
-            <CommentEditor data={data} setData={setData} />
+            {/* <CommentEditor data={data} setData={setData} /> */}
           </Grid>
 
           {/* Submit Button or Loader */}

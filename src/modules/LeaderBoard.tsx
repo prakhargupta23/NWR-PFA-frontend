@@ -102,28 +102,30 @@ const LeaderBoard: React.FC<DivisionPerformanceTableProps> = ({
     <TableContainer
       component={Paper}
       sx={{
-        background: "rgba(56, 38, 96, 0.9)",
+        background: "rgba(255, 255, 255, 0.3)",
         height: "100%",
         display: "flex",
         flexDirection: "column",
         borderRadius: 2,
+        color: "#000",
         border: "1px solid #B72BF8",
         boxSizing: "border-box",
         overflow: "hidden",
       }}
     >
       {/* Static Header */}
-      <Box sx={{ py: 2, borderBottom: "1px solid rgba(255,255,255,0.2)" }}>
-        <Typography variant="h6" sx={{ color: "white", textAlign: "center" }}>
+      <Box sx={{ py: 2, borderBottom: "1px solid rgba(255,255,255,0.05)" }}>
+        <Typography variant="h6" sx={{ color: "rgba(0,0,0,0.8)", textAlign: "center", fontWeight: 600 }}>
           Leader Board
         </Typography>
         <Typography
           variant="body2"
           sx={{
-            color: "white",
             textAlign: "center",
             fontSize: "0.875rem",
             marginTop: 1,
+            color: "rgba(0,0,0,0.7)",
+            fontWeight: 500,
           }}
         >
           Figures in thousands
@@ -140,25 +142,25 @@ const LeaderBoard: React.FC<DivisionPerformanceTableProps> = ({
             alignItems: "center",
           }}
         >
-          <CircularProgress sx={{ color: "white" }} />
+          <CircularProgress sx={{ color: "rgba(0,0,0,0.8)" }} />
         </Box>
       ) : (
         <Box sx={{ flex: 1, overflowY: "auto" }}>
           <Table size="small" sx={{ minWidth: 300, width: "100%" }}>
             <TableHead>
-              <TableRow sx={{ backgroundColor: "rgba(255,255,255,0.05)" }}>
+              <TableRow sx={{ backgroundColor: "rgba(0,0,0,0.05)" }}>
                 <TableCell sx={{ color: "white", fontWeight: 600 }}>
                   Division
                 </TableCell>
                 <TableCell
                   align="right"
-                  sx={{ color: "white", fontWeight: 600 }}
+                  sx={{ color: "rgba(0,0,0,0.7)", fontWeight: 600 }}
                 >
                   Actual
                 </TableCell>
                 <TableCell
                   align="right"
-                  sx={{ color: "white", fontWeight: 600 }}
+                  sx={{ color: "rgba(0,0,0,0.7)", fontWeight: 600 }}
                 >
                   Target
                 </TableCell>
@@ -172,22 +174,22 @@ const LeaderBoard: React.FC<DivisionPerformanceTableProps> = ({
                     sx={{
                       backgroundColor:
                         idx % 2 === 0
-                          ? "rgba(255,255,255,0.02)"
+                          ? "rgba(0,0,0,0.02)"
                           : "transparent",
                     }}
                   >
-                    <TableCell sx={{ color: "white" }}>
+                    <TableCell sx={{ color: "rgba(0,0,0,0.7)" }}>
                       {row.division}
                     </TableCell>
-                    <TableCell align="right" sx={{ color: "white" }}>
+                    <TableCell align="right" sx={{ color: "rgba(0,0,0,0.7)" }}>
                       {formatCurrency(row.actualThisMonth)}
                     </TableCell>
-                    <TableCell align="right" sx={{ color: "white" }}>
+                    <TableCell align="right" sx={{ color: "rgba(0,0,0,0.7)" }}>
                       {formatCurrency(row.targetThisMonth)}
                     </TableCell>
                   </TableRow>
                   <TableRow>
-                    <TableCell colSpan={3} sx={{ py: 1 }}>
+                    <TableCell colSpan={3} sx={{ py: 1,}}>
                       <Box
                         sx={{
                           display: "flex",

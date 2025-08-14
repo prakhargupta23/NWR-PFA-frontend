@@ -1,5 +1,6 @@
 import { fetchWrapper } from "../helpers/fetch-wrapper";
 import { config } from "../shared/constants/config";
+import { getUserData } from "./user.service";
 
 /// Exporting all the function for the ab testing -----------------------/
 export const transactionService = {
@@ -12,9 +13,14 @@ export const transactionService = {
 
 //// Funciton for fetching all the experiments ---------------------------/
 async function uploadTransactionData(data: any) {
-  return fetchWrapper.post(`${config.apiUrl}/api/upload-transaction-data`, {
+  console.log("ddddddddddddddddata")
+  const userdata = await getUserData();
+  const response = await fetchWrapper.post(`${config.apiUrl}/api/upload-transaction-data`, {
     data,
+    username: userdata.username
   });
+  console.log("response",response)
+  return response;
 }
 //// Function for getting the transaction bar data -----------------------/
 
@@ -51,6 +57,7 @@ async function getTransactionDocData(
 
 //// Function for getting the pfa report data ------------------------------------------/
 async function getReportData(date: any) {
-  // console.log("wwlgfadhKJSLJDSKWJDFS",fetchWrapper.get(`${config.apiUrl}/api/get-report-data?date=${date}`));
-  return fetchWrapper.get(`${config.apiUrl}/api/get-report-data?date=${date}`);
+  const data = await getUserData();
+  console.log("user data",data.username)
+  return fetchWrapper.get(`${config.apiUrl}/api/get-report-data?date=${date}&username=${data.username}`);
 }

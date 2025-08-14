@@ -26,7 +26,7 @@ import DynamicFormModal from "../modules/PromptModal";
 
 import { CsvModal } from "../modules/CsvModal";
 import { sqlService } from "../services/sqldata.service";
-import TopAppBar from "../modules/TopAppBar";
+import WorkshopTopAppBar from "../modules/WorkshopTopAppBar";
 import Expenditure from "../Components/Pfa/Expenditure";
 import Recoverable from "../Components/Pfa/Recoverable";
 import PerformanceIndex from "../Components/Pfa/PerformanceIndex";
@@ -38,8 +38,6 @@ import { humanLabel, sheetOptions } from "../utils/staticDataUtis";
 import { formatHeader, formatSheetName } from "../utils/otherUtils";
 import SheetTable from "../Components/Pfa/SheetTable";
 import NewsFeed from "../modules/NewsFeed";
-import VantaBackground from "../modules/Bird-bg";
-
 Chart.register(...registerables);
 const MONTHS = [
   "January",
@@ -356,21 +354,20 @@ export default function PFAPage() {
   }
 
   return (
-    <VantaBackground>
-      <div
-        style={{
-          width: "100vw",
-          height: "100vh", // Full viewport height
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          overflowY: "hidden",
-          paddingBottom: "10px",
-          overflowX: "hidden",
-          position: "relative",
-        }}
-      >
-      <TopAppBar
+    <div
+      style={{
+        width: "100vw",
+        height: "100vh", // Full viewport height
+        display: "flex",
+        flexDirection: "column",
+        backgroundColor: "#101319",
+        alignItems: "center",
+        overflowY: "hidden",
+        paddingBottom: "10px",
+        overflowX: "hidden",
+      }}
+    >
+      <WorkshopTopAppBar
         setDeleteModalOpen={(open) => setDeleteModalOpen(open)}
         deleteLoading={deleteLoading}
         setOpenCsvModal={(open) => setOpenCsvModal(open)}
@@ -384,8 +381,6 @@ export default function PFAPage() {
         reloadGraph={reloadGraph}
         setReloadGraph={setReloadGraph}
       />
-
-      
       {/* Main Content Section */}
       <Box
         sx={{
@@ -411,7 +406,7 @@ export default function PFAPage() {
           <Grid
             item
             xs={12}
-            md={5}
+            md={7}
             sx={{
               display: "flex",
               flexDirection: "column",
@@ -451,7 +446,7 @@ export default function PFAPage() {
                   marginBottom: "16px",
                   "& .MuiSelect-icon": {
                     color: "#fff",
-                  },  
+                  },
                 }}
                 MenuProps={{
                   PaperProps: {
@@ -504,7 +499,7 @@ export default function PFAPage() {
           </Grid>
           
           {/* Leaderboard and News Feed section - only shown for Expenditure and Earning */}
-          {(categoryType === "Expenditure" || categoryType === "Earning") ? (
+          {/* {(categoryType === "Expenditure" || categoryType === "Earning") ? (
             <Grid
               item
               xs={12}
@@ -584,13 +579,13 @@ export default function PFAPage() {
                 </Box>
               </Box>
             </Grid>
-          )}
+          )} */}
           
           {/* Chat Section */}
           <Grid
             item
             xs={12}
-            md={4}
+            md={5}
             sx={{
               display: "flex",
               flexDirection: "column",
@@ -806,8 +801,7 @@ export default function PFAPage() {
         reloadGraph={reloadGraph}
         openCsvModal={openCsvModal}
       />
-      </div>
-    </VantaBackground>
+    </div>
   );
 }
 function setLoading(arg0: boolean) {

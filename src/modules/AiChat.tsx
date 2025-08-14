@@ -294,6 +294,7 @@ export default function ChatInterface({ fullNavBar, pageNmae }: any) {
           height: "100%",
           top: 0,
           left: 0,
+          // background: "#fff",
           background:
             "radial-gradient(137.56% 745.22% at 27.41% 80%, #7328EB 0%, #B72BF8 100%)",
           filter: "blur(100px)", // Adjust blur intensity (600px is too strong)
@@ -308,7 +309,9 @@ export default function ChatInterface({ fullNavBar, pageNmae }: any) {
           height: "100%",
           display: "flex",
           flexDirection: "column",
-          background: "rgba(56, 38, 96, 0.7)", // Slight transparency to show the blur
+          // background: "rgba(56, 38, 96, 0.7)", // Slight transparency to show the blur
+          background: "rgba(255,255,255,0.5)",
+          color: "#000",
           border: "1px solid #B72BF8",
           position: "relative", // Ensure it stays above the blurred background
         }}
@@ -344,7 +347,7 @@ export default function ChatInterface({ fullNavBar, pageNmae }: any) {
                   variant="h6"
                   sx={{
                     fontWeight: "700",
-                    color: "#fff",
+                    color: "rgba(0,0,0,0.8)",
                     fontFamily: "MyCustomFont,SourceSerif4_18pt",
                   }}
                 >
@@ -353,7 +356,7 @@ export default function ChatInterface({ fullNavBar, pageNmae }: any) {
                 <Typography
                   sx={{
                     fontSize: "14px",
-                    color: "#fff",
+                    color: "rgba(0,0,0,0.8)",
                     mt: 1,
                     fontFamily: "MyCustomFont,SourceSerif4_18pt",
                   }}
@@ -370,16 +373,16 @@ export default function ChatInterface({ fullNavBar, pageNmae }: any) {
                     mb: 2,
                     display: "flex",
                     alignItems: "center",
-                    backgroundColor: "#36314f", // Dark background
+                    backgroundColor: "#000", // Dark background
                     borderRadius: "12px",
                     height: "49px",
                     padding: "6px 12px",
-                    border: "1px solid rgba(255, 255, 255, 0.3)", // Add subtle border
+                    border: "1px solid rgba(255, 255, 255, 1)", // Add subtle border
                   }}
                 >
                   {/* Left Icon Outside the Inner Box */}
                   <ChatBubbleOutline
-                    sx={{ color: "#A1A1A1", fontSize: "18px", mr: 1 }}
+                    sx={{ color: "#D3DDDB", fontSize: "18px", mr: 1 }}
                   />
 
                   {/* Inner Box with an extra border around TextField */}
@@ -472,7 +475,7 @@ export default function ChatInterface({ fullNavBar, pageNmae }: any) {
                   overflowY: "auto", // Scroll only in chat messages
                   padding: "16px",
                   maxHeight: "420px",
-                  backgroundColor: "#382660",
+                  backgroundColor: "rgba(255,255,255,0.5)",
 
                   borderTopRightRadius: "12px",
                   borderTopLeftRadius: "12PX",
@@ -506,7 +509,7 @@ export default function ChatInterface({ fullNavBar, pageNmae }: any) {
                           <IconButton
                             sx={{
                               backgroundColor: "#1E1E2E",
-                              color: "white",
+                              color: "#000",
                               width: "40px",
                               height: "40px",
                               borderRadius: "50%",
@@ -527,16 +530,16 @@ export default function ChatInterface({ fullNavBar, pageNmae }: any) {
 
                         <Typography
                           sx={{
-                            padding: "10px",
+                            padding: "15px",
                             backgroundColor:
-                              msg.role === "user" ? "#1e2032" : "#2a2249",
+                              msg.role === "user" ? "#8F8D8D" : "rgba(45, 150, 135, 0.7)",
                             color: "#fff",
                             borderRadius: "10px",
                             maxWidth: "100%",
                             wordWrap: "break-word",
                             whiteSpace: "pre-wrap",
                             textAlign: "left",
-                            lineHeight: "1.2",
+                            lineHeight: "1",
                             fontFamily: "MyCustomFont,SourceSerif4_18pt",
                             overflowWrap: "break-word",
                             wordBreak: "break-word",
@@ -569,8 +572,8 @@ export default function ChatInterface({ fullNavBar, pageNmae }: any) {
                       {msg.role === "user" ? (
                         <IconButton
                           sx={{
-                            backgroundColor: "#1E1E2E",
-                            color: "white",
+                            backgroundColor: "#000",
+                            color: "#000",
                             width: "40px",
                             height: "40px",
                             borderRadius: "50%",
@@ -630,7 +633,8 @@ export default function ChatInterface({ fullNavBar, pageNmae }: any) {
                   mb: 2,
                   display: "flex",
                   alignItems: "center",
-                  backgroundColor: "#36314f", // Dark background
+                  backgroundColor: "rgba(0, 0, 0, 1)", // Dark background
+                  color: "#000",
                   borderRadius: "12px",
                   height: "49px",
                   padding: "6px 12px",
@@ -657,7 +661,7 @@ export default function ChatInterface({ fullNavBar, pageNmae }: any) {
                   onChange={(e) => setInput(e.target.value)}
                   variant="outlined"
                   sx={{
-                    backgroundColor: "#191F2A",
+                    backgroundColor: "rgba(255,255,255,0.5)",
                     borderRadius: "8px", // Rounded corners
                     "& .MuiOutlinedInput-root": {
                       borderRadius: "8px",
@@ -671,7 +675,7 @@ export default function ChatInterface({ fullNavBar, pageNmae }: any) {
                     "& .MuiInputBase-input": {
                       padding: "6px 12px",
                       fontSize: "14px",
-                      color: "#FFFFFF",
+                      color: "#fff",
                     },
                   }}
                 />

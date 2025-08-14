@@ -21,8 +21,9 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import { useNavigate } from "react-router-dom";
 import { userSubject } from "../services/user.service";
 import TransactionModal from "./TransactionModel";
-import DownloadSheetsDoc from "./SheetDataDownload";
-import PDFUploadButton from "./UploadPdf";
+// import DownloadSheetsDoc from "./SheetDataDownload";
+// import PDFUploadButton from "./UploadPdf";
+import UploadWorkshopData from "./UploadWorkshopData";
 
 interface TopAppBarProps {
   setDeleteModalOpen: (open: boolean) => void;
@@ -182,97 +183,16 @@ export default function TopAppBar({
           ) : (
             // Normal Layout for Larger Screens
             <Box sx={{ display: "flex", alignItems: "center" }}>
-              {extraButton === false ? (
-                <>
-                  {deleteLoading ? (
-                    <IconButton sx={{ color: "white" }}>
-                      <CircularProgress size={24} />
-                    </IconButton>
-                  ) : (
-                    <IconButton
-                      onClick={() => setDeleteModalOpen(true)}
-                      sx={{ color: "white" }}
-                    >
-                      <DeleteIcon />
-                    </IconButton>
-                  )}
-                  <Button
-                    variant="contained"
-                    startIcon={<Upload />}
-                    sx={{
-                      backgroundColor: "#222633",
-                      color: "white",
-                      "&:hover": { backgroundColor: "#222633" },
-                      border: "1.5px solid rgba(255, 255, 255, 0.1)", // Soft, subtle border
-                      borderRadius: "12px",
-                      p: "12px",
-                      fontSize: "16px",
-                      fontFamily: "MyCustomFont,SourceSerif4_18pt",
-                      textTransform: "none",
-                      marginX: 1,
-                    }}
-                    onClick={() => setOpenCsvModal(true)}
-                  >
-                    NWR Master
-                  </Button>
-                  <Button
-                    variant="contained"
-                    startIcon={<Upload />}
-                    sx={{
-                      backgroundColor: "#222633",
-                      color: "white",
-                      "&:hover": { backgroundColor: "#222633" },
-                      border: "1.5px solid rgba(255, 255, 255, 0.1)", // Soft, subtle border
-                      borderRadius: "12px",
-                      p: "12px",
-                      fontSize: "16px",
-                      fontFamily: "MyCustomFont,SourceSerif4_18pt",
-                      textTransform: "none",
-                      marginX: 1,
-                    }}
-                    onClick={() => {
-                      setCsvToUpload("sbi");
-                      setOpen(true);
-                    }}
-                  >
-                    Bank Master
-                  </Button>
-                  {csvDownloading ? (
-                    <CircularProgress size={24} sx={{ marginX: 1 }} />
-                  ) : (
-                    <Tooltip title="Unlinked Entries from SBI Master" arrow>
-                      <Button
-                        variant="contained"
-                        startIcon={<Download />}
-                        sx={{
-                          backgroundColor: "#222633",
-                          color: "white",
-                          "&:hover": { backgroundColor: "#222633" },
-                          border: "1.5px solid rgba(255, 255, 255, 0.1)", // Soft, subtle border
-
-                          borderRadius: "12px",
-                          p: "12px",
-                          fontSize: "16px",
-                          fontFamily: "MyCustomFont,SourceSerif4_18pt",
-                          textTransform: "none",
-                          marginX: 1,
-                        }}
-                        onClick={downloadCsvData}
-                      >
-                        Unlinked Data
-                      </Button>
-                    </Tooltip>
-                  )}
-                </>
-              ) : null}
+             
               {extraButton === true ? (
                 <>
-                  <TransactionModal
+                  {/* <TransactionModal
                     reloadGraph={reloadGraph}
                     setReloadGraph={setReloadGraph}
-                  />
-                  <DownloadSheetsDoc />
-                  <PDFUploadButton />
+                  /> */}
+                  <UploadWorkshopData reloadGraph={reloadGraph} setReloadGraph={setReloadGraph} />
+                  {/* <DownloadSheetsDoc />
+                  <PDFUploadButton /> */}
                 </>
               ) : null}
 
@@ -356,7 +276,7 @@ export default function TopAppBar({
             alignItems: "center",
           }}
         >
-          {deleteLoading ? (
+          {/* {deleteLoading ? (
             <IconButton sx={{ color: "black" }}>
               <CircularProgress size={24} />
             </IconButton>
@@ -364,61 +284,12 @@ export default function TopAppBar({
             <IconButton onClick={() => setDeleteModalOpen(true)}>
               <DeleteIcon />
             </IconButton>
-          )}
+          )} */}
 
-          <Button
-            variant="contained"
-            startIcon={<Upload />}
-            sx={{
-              marginY: 1,
-              width: "100%",
-              fontFamily: "MyCustomFont,SourceSerif4_18pt",
-              textTransform: "none",
-            }}
-            onClick={() => setOpenCsvModal(true)}
-          >
-            NWR Master
-          </Button>
+          
 
-          <Button
-            variant="contained"
-            startIcon={<Upload />}
-            sx={{
-              marginY: 1,
-              width: "100%",
-              fontFamily: "MyCustomFont,SourceSerif4_18pt",
-              textTransform: "none",
-            }}
-            onClick={() => {
-              setCsvToUpload("sbi");
-              setOpen(true);
-            }}
-          >
-            Bank Master
-          </Button>
-          {csvDownloading ? (
-            <CircularProgress size={24} sx={{ marginY: 1 }} />
-          ) : (
-            <Tooltip title="Download Unlinked Data as CSV" arrow>
-              <span style={{ width: "100%" }}>
-                {" "}
-                {/* This is important! */}
-                <Button
-                  variant="contained"
-                  startIcon={<Download />}
-                  sx={{
-                    marginY: 1,
-                    width: "100%", // Optional: move width control here or keep it on span
-                    fontFamily: "MyCustomFont,SourceSerif4_18pt",
-                    textTransform: "none",
-                  }}
-                  onClick={downloadCsvData}
-                >
-                  Unlinked Data
-                </Button>
-              </span>
-            </Tooltip>
-          )}
+          
+          
 
           {/* <Avatar sx={{ backgroundColor: "#555", marginY: 2 }} /> */}
           {/* <SettingsIcon
