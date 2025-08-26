@@ -128,7 +128,7 @@ const LeaderBoard: React.FC<DivisionPerformanceTableProps> = ({
             fontWeight: 500,
           }}
         >
-          Figures in thousands
+          Figures in crores
         </Typography>
       </Box>
 
@@ -149,7 +149,7 @@ const LeaderBoard: React.FC<DivisionPerformanceTableProps> = ({
           <Table size="small" sx={{ minWidth: 300, width: "100%" }}>
             <TableHead>
               <TableRow sx={{ backgroundColor: "rgba(0,0,0,0.05)" }}>
-                <TableCell sx={{ color: "white", fontWeight: 600 }}>
+                <TableCell sx={{ color: "rgba(0,0,0,0.7)", fontWeight: 600 }}>
                   Division
                 </TableCell>
                 <TableCell

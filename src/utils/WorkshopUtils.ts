@@ -64,7 +64,7 @@ export const parseExcelFile = async (
         itemPositioninSuspenseRegister: "Position of Items in Susp. Reg.",
         unsanctionedExpenditure: "Unsanctioned Expenditure",
         inspectionPara: "Railway Board Inspection Para",
-        outstandingAuditObjection: "Outstanding Audit Objection",
+        outstandingAuditObjection: "Oustanding Audit Objections",
         analysisOfAuditReference: "Analysis of Audit Reference",
         positionOfAccountInspection: "Position Of Account Inspections",
         accountInspectionofOffices: "Account Inspection of Offices",
@@ -79,14 +79,14 @@ export const parseExcelFile = async (
         ageWisePositionOfStockSheet: "AgeWise Position of StockSheet",
         deptWisePositionStocksheet: "DeptWise Position Stocksheet",
         staffReferencesOrCases: "Staff References or Cases",
-        clearanceAndAdjustmentOfMA: "Clearance and adjustment of MA",
+        clearanceAndAdjustmentOfMA: "Clearence and adjustment of MA",
         progressOfSalaryPayment: "Progress of Salary Payment",
         progressOfEPayment: "Progress Of E-Payment",
         progressOfSalaryThroughBank: "Progress of Salary through bank",
         progressOfSalaryThroughECS: "Progress of Salary through ECS",
         plannedImplementationECS: "Planned Implementation ECS",
         reportOnFacilityAugmentation: "Report on facility augmentation",
-        testChecksBySS: "Test checks by SS,JS,SSO,SO",
+        testChecksBySS: "Test checks by SS",
         testChecksBySrISA: "Test checks by Sr.ISA",
         quaterlyTestChecksByJAG: "Quaterly test checks by JAG",
         rotationOfStaff: "Rotation of Staff",
@@ -97,7 +97,7 @@ export const parseExcelFile = async (
         deptWiseRecoverableItems: "Dept. wise recoverable items",
         positionOfSpotChecking: "Position of Spot Checking",
         statusOfRevisionOfPension: "Status of Rivision of Pension",
-        assistanceRequiredFromHO: "Assistance required from HO",
+        assistanceRequiredFromHO: "Assistance required from HQ",
 
 
        
@@ -131,6 +131,9 @@ export const parseExcelFile = async (
         {}
       );
       console.log("sheets",sheets)
+      console.log("Available sheet keys:", Object.keys(workbook.Sheets))
+      console.log("Expected sheet names:", Object.values(sheetNames))
+      
       // date strings
       const formattedDate = getMonthYear(month, year);
       const selectedMonthYear = formattedDate;
@@ -151,7 +154,8 @@ export const parseExcelFile = async (
       
   
       // unified parser: alpha-keys + drop “total” rows and below
-      const parseSheetWithAlphaKeys = (sheet: XLSX.WorkSheet): any[] => {
+      const parseSheetWithAlphaKeys = (sheet: XLSX.WorkSheet | undefined): any[] => {
+        if (!sheet) return [];
         const ref = sheet["!ref"] || "";
         if (!ref) return [];
   
@@ -195,6 +199,7 @@ export const parseExcelFile = async (
       };
 
     //   const finalData = {}
+    console.log("parseSheetWithAlphaKeys(sheets.completionReports)",parseSheetWithAlphaKeys(sheets.completionReports))
   
       // assemble finalData
       const finalData = {
@@ -203,15 +208,16 @@ export const parseExcelFile = async (
                 division,
                 date: formattedDate,
                 figure: detectFigureUnit(sheets.workingExpenditure),
-                DemandNo: row.a,
-                Actual: row.b,
-                RBG: row.c,
-                BPfortheMonth: row.d,
-                ActualfortheMonthLastYear: row.e,
-                ActualfortheMonthCurrentYear: row.f,
-                BPtoendofMonth: row.g,
-                ActualtoendofMonthLastYear: row.h,
-                ActualtotheEndofMonthCurrentYear: row.i,
+                index: row.a,
+                DemandNo: row.b,
+                Actual: row.c,
+                RBG: row.d,
+                BPfortheMonth: row.e,
+                ActualfortheMonthLastYear: row.f,
+                ActualfortheMonthCurrentYear: row.g,
+                BPtoendofMonth: row.h,
+                ActualtoendofMonthLastYear: row.i,
+                ActualtotheEndofMonthCurrentYear: row.j,
 
             })): [],
         planHead: sheets.planHead
@@ -219,11 +225,12 @@ export const parseExcelFile = async (
                 division,
                 date: formattedDate,
                 figure: detectFigureUnit(sheets.planHead),
-                PlanHead: row.a,
-                Actual: row.b,
-                RBG: row.c,
-                ActualfortheMonthLastYear: row.d,
-                ActualfortheMonthCurrentYear: row.e,
+                index: row.a,
+                PlanHead: row.b,
+                Actual: row.c,
+                RBG: row.d,
+                ActualfortheMonthLastYear: row.e,
+                ActualfortheMonthCurrentYear: row.f,
 
             })): [],
             
@@ -232,16 +239,17 @@ export const parseExcelFile = async (
                 division,
                 date: formattedDate,
                 figure: detectFigureUnit(sheets.manufacturingSuspense),
-                OpeningBalance: row.a,
-                RBGDebit: row.b,
-                RBGCredit: row.c,
-                RBGNet: row.d,
-                ExpendituretotheEndofMonthDebit: row.e,
-                ExpendituretotheEndofMonthCredit: row.f,
-                ExpendituretotheEndofMonthNet: row.g,
-                BalancetotheEndofMonthDebit: row.h,
-                BalancetotheEndofMonthCredit: row.i,
-                BalancetotheEndofMonthNet: row.j,
+                index: row.a,
+                OpeningBalance: row.b,
+                RBGDebit: row.c,
+                RBGCredit: row.d,
+                RBGNet: row.e,
+                ExpendituretotheEndofMonthDebit: row.f,
+                ExpendituretotheEndofMonthCredit: row.g,
+                ExpendituretotheEndofMonthNet: row.h,
+                BalancetotheEndofMonthDebit: row.i,
+                BalancetotheEndofMonthCredit: row.j,
+                BalancetotheEndofMonthNet: row.k,
 
             })): [],
         wmsBalance: sheets.wmsBalance
@@ -249,13 +257,14 @@ export const parseExcelFile = async (
                 division,
                 date: formattedDate,
                 figure: detectFigureUnit(sheets.wmsBalance),
-                Particulars: row.a,
-                ActualLY: row.b,
-                ActualLLY: row.c,
-                RGB: row.d,
-                BPuptoMonth: row.e,
-                ActualfortheMonth: row.f,
-                ActualtotheEndofMonth: row.g,
+                index: row.a,
+                Particulars: row.b,
+                ActualLY: row.c,
+                ActualLLY: row.d,
+                RGB: row.e,
+                BPuptoMonth: row.f,
+                ActualfortheMonth: row.g,
+                ActualtotheEndofMonth: row.h,
                 
 
             })): [],
@@ -264,8 +273,9 @@ export const parseExcelFile = async (
                 division,
                 date: formattedDate,
                 figure: detectFigureUnit(sheets.wmsClosingBalance),
-                breakUp: row.a,
-                Amount: row.b,
+                index: row.a,
+                breakUp: row.b,
+                Amount: row.c,
                 
             })): [],
          wmsBalanceAnalysis: sheets.wmsBalanceAnalysis
@@ -273,16 +283,17 @@ export const parseExcelFile = async (
                 division,
                 date: formattedDate,
                 figure: detectFigureUnit(sheets.wmsBalanceAnalysis),
-                previousYearNonth: row.a,
-                previousYearOpeningBalance: row.b,
-                previousYearDebit: row.c,
-                previousYearCredit: row.d,
-                previousYearClosingBalance: row.e,
-                currentYearNonth: row.f,
-                currentYearOpeningBalance: row.g,
-                currentYearDebit: row.h,
-                currentYearCredit: row.i,
-                currentYearClosingBalance: row.j,
+                index: row.a,
+                previousYearNonth: row.b,
+                previousYearOpeningBalance: row.c,
+                previousYearDebit: row.d,
+                previousYearCredit: row.e,
+                previousYearClosingBalance: row.f,
+                currentYearNonth: row.g,
+                currentYearOpeningBalance: row.h,
+                currentYearDebit: row.i,
+                currentYearCredit: row.j,
+                currentYearClosingBalance: row.k,
 
                 
             })): [],
@@ -291,12 +302,13 @@ export const parseExcelFile = async (
                 division,
                 date: formattedDate,
                 figure: detectFigureUnit(sheets.wmsStoreCharges),
-                actualLLYMonth: row.a,
-                actualLLYAmount: row.b,
-                actualLYMonth: row.c,
-                actualLYAmount: row.d,
-                actualMonth: row.e,
-                actualAmount: row.f,
+                index: row.a,
+                actualLLYMonth: row.b,
+                actualLLYAmount: row.c,
+                actualLYMonth: row.d,
+                actualLYAmount: row.e,
+                actualMonth: row.f,
+                actualAmount: row.g,
                 
 
                 
@@ -306,12 +318,13 @@ export const parseExcelFile = async (
                 division,
                 date: formattedDate,
                 figure: detectFigureUnit(sheets.positionofDirectPurchase),
-                actualLLYMonth: row.a,
-                actualLLYAmount: row.b,
-                actualLYMonth: row.c,
-                actualLYAmount: row.d,
-                actualMonth: row.e,
-                actualAmount: row.f,
+                index: row.a,
+                actualLLYMonth: row.b,
+                actualLLYAmount: row.c,
+                actualLYMonth: row.d,
+                actualLYAmount: row.e,
+                actualMonth: row.f,
+                actualAmount: row.g,
                 
 
                 
@@ -321,14 +334,15 @@ export const parseExcelFile = async (
                 division,
                 date: formattedDate,
                 figure: detectFigureUnit(sheets.comparativePositionofOutturn),
-                nameOfActivity: row.b,
-                targetAnnual: row.c,
-                targetUptotheMonth: row.d,
-                outturnfortheMonth: row.e,
-                outturnUptotheMonth: row.f,
-                outturnUptotheMonthofCorrospondingPeriod: row.g,
-                difference: row.h,
-                remarks: row.i,
+                index: row.a,
+                nameOfActivity: row.c,
+                targetAnnual: row.d,
+                targetUptotheMonth: row.e,
+                outturnfortheMonth: row.f,
+                outturnUptotheMonth: row.g,
+                outturnUptotheMonthofCorrospondingPeriod: row.h,
+                difference: row.i,
+                remarks: row.j,
                 
             })): [],
         pohUnitCost: sheets.pohUnitCost
@@ -336,13 +350,15 @@ export const parseExcelFile = async (
                 division,
                 date: formattedDate,
                 figure: detectFigureUnit(sheets.pohUnitCost),
-                nameOfActivity: row.b,
-                labour: row.c,
-                material: row.d,
-                onCostLabour: row.e,
-                onCostStore: row.f,
-                unitCostfortheMonth: row.g,
-                remarks: row.h,
+                index: row.a,
+                SNo: row.b,
+                nameOfActivity: row.c,
+                labour: row.d,
+                material: row.e,
+                onCostLabour: row.f,
+                onCostStore: row.g,
+                unitCostfortheMonth: row.h,
+                remarks: row.i,
                 
             })): [],
         postingandReconciliation: sheets.postingandReconciliation
@@ -350,13 +366,15 @@ export const parseExcelFile = async (
                 division,
                 date: formattedDate,
                 figure: detectFigureUnit(sheets.postingandReconciliation),
-                suspenseHeads: row.b,
-                positionasperLHAR: row.c,
-                openingBalance: row.d,
-                accretion: row.e,
-                clearance: row.f,
-                closingBalance: row.g,
-                remarks: row.h,
+                index: row.a,
+                SNo: row.b,
+                suspenseHeads: row.c,
+                positionasperLHAR: row.d,
+                openingBalance: row.e,
+                accretion: row.f,
+                clearance: row.g,
+                closingBalance: row.h,
+                remarks: row.i,
                 
             })): [],
         itemPositioninSuspenseRegister: sheets.itemPositioninSuspenseRegister
@@ -364,18 +382,20 @@ export const parseExcelFile = async (
                 division,
                 date: formattedDate,
                 figure: detectFigureUnit(sheets.itemPositioninSuspenseRegister),
-                suspenseHeads: row.b,
-                positionasperLHARitem: row.c,
-                positionasperLHARamount: row.d,
-                openingBalanceitem: row.e,
-                openingBalanceamount: row.f,
-                accretionitem: row.g,
-                accretionamount: row.h,
-                clearanceitem: row.i,
-                clearanceamount: row.j,
-                closingBalanceitem: row.k,
-                closingBalanceamount: row.l,
-                oldestBalance: row.m,
+                index: row.a,
+                SNo: row.b,
+                suspenseHeads: row.c,
+                positionasperLHARitem: row.d,
+                positionasperLHARamount: row.e,
+                openingBalanceitem: row.f,
+                openingBalanceamount: row.g,
+                accretionitem: row.h,
+                accretionamount: row.i,
+                clearanceitem: row.j,
+                clearanceamount: row.k,
+                closingBalanceitem: row.l,
+                closingBalanceamount: row.m,
+                oldestBalance: row.n,
                 
             })): [],
         unsanctionedExpenditure: sheets.unsanctionedExpenditure
@@ -383,19 +403,20 @@ export const parseExcelFile = async (
                 division,
                 date: formattedDate,
                 figure: detectFigureUnit(sheets.unsanctionedExpenditure),
-                SNo: row.a,
-                suspenseHeads: row.b,
-                positionasperLHARitem: row.c,
-                positionasperLHARamount: row.d,
-                openingBalanceitem: row.e,
-                openingBalanceamount: row.f,
-                accretionitem: row.g,
-                accretionamount: row.h,
-                clearanceitem: row.i,
-                clearanceamount: row.j,
-                closingBalanceitem: row.k,
-                closingBalanceamount: row.l,
-                oldestBalance: row.m,
+                index: row.a,
+                SNo: row.b,
+                suspenseHeads: row.c,
+                positionasperLHARitem: row.d,
+                positionasperLHARamount: row.e,
+                openingBalanceitem: row.f,
+                openingBalanceamount: row.g,
+                accretionitem: row.h,
+                accretionamount: row.i,
+                clearanceitem: row.j,
+                clearanceamount: row.k,
+                closingBalanceitem: row.l,
+                closingBalanceamount: row.m,
+                oldestBalance: row.n,
                 
             })): [],
         inspectionPara: sheets.inspectionPara
@@ -403,13 +424,15 @@ export const parseExcelFile = async (
                 division,
                 date: formattedDate,
                 figure: detectFigureUnit(sheets.inspectionPara),
-                typeOfPara: row.b,
-                totalNoOfParas: row.c,
-                noOfParasOutstandingatStart: row.d,
-                noOfParasClosed: row.e,
-                noOfParasOutstandingatEnd: row.f,
-                accretionitem: row.g,
-                remarks: row.h,
+                index: row.a,
+                SNo: row.b,
+                yearofReport: row.c,
+                typeOfPara: row.d,
+                totalNoOfParas: row.e,
+                noOfParasOutstandingatStart: row.f,
+                noOfParasClosed: row.g,
+                noOfParasOutstandingatEnd: row.h,
+                remarks: row.i,
                 
             })): [],
         outstandingAuditObjection: sheets.outstandingAuditObjection
@@ -417,15 +440,16 @@ export const parseExcelFile = async (
                 division,
                 date: formattedDate,
                 figure: detectFigureUnit(sheets.outstandingAuditObjection),
-                SNo: row.a,
-                typeOfAuditObjection: row.b,
-                positionasperLHY: row.c,
-                openingBalance: row.d,
-                accretion: row.e,
-                clearenceOverOneYearOld: row.f,
-                clearenceLessthanOneYearOld: row.g,
-                totalClearence: row.h,
-                closingBalance: row.i,
+                index: row.a,
+                SNo: row.b,
+                typeOfAuditObjection: row.c,
+                positionasperLHY: row.d,
+                openingBalance: row.e,
+                accretion: row.f,
+                clearenceOverOneYearOld: row.g,
+                clearenceLessthanOneYearOld: row.h,
+                totalClearence: row.i,
+                closingBalance: row.j,
                 
             })): [],
         analysisOfAuditReference: sheets.analysisOfAuditReference
@@ -433,13 +457,14 @@ export const parseExcelFile = async (
                 division,
                 date: formattedDate,
                 figure: detectFigureUnit(sheets.analysisOfAuditReference),
-                SNo: row.a,
-                typeOfAuditObjection: row.b,
-                closingBalance: row.c,
-                overSixMonthOld: row.d,
-                overOneYearOld: row.e,
-                overThreeYearOld: row.f,
-                lessThanSixMonthOld: row.g,
+                index: row.a,
+                SNo: row.b,
+                typeOfAuditObjection: row.c,
+                closingBalance: row.d,
+                overSixMonthOld: row.e,
+                overOneYearOld: row.f,
+                overThreeYearOld: row.g,
+                lessThanSixMonthOld: row.h,
                 
             })): [],
         positionOfAccountInspection: sheets.positionOfAccountInspection
@@ -447,13 +472,14 @@ export const parseExcelFile = async (
                 division,
                 date: formattedDate,
                 figure: detectFigureUnit(sheets.positionOfAccountInspection),
-                particular: row.a,
-                noOfInspectionsDue: row.b,
-                noOfOfficesInspected: row.c,
-                moneyValueInvolvedinInspections: row.d,
-                recoveries: row.e,
-                noOfInspectionsOutstanding: row.f,
-                reasonsForArrears: row.g,
+                index: row.a,
+                particular: row.b,
+                noOfInspectionsDue: row.c,
+                noOfOfficesInspected: row.d,
+                moneyValueInvolvedinInspections: row.e,
+                recoveries: row.f,
+                noOfInspectionsOutstanding: row.g,
+                reasonsForArrears: row.h,
                 
             })): [],
         accountInspectionofOffices: sheets.accountInspectionofOffices
@@ -461,16 +487,17 @@ export const parseExcelFile = async (
                 division,
                 date: formattedDate,
                 figure: detectFigureUnit(sheets.accountInspectionofOffices),
-                SNo: row.a,
-                doneBy: row.b,
-                targetfortheYear: row.c,
-                duefortheMonth: row.d,
-                dueUptotheMonth: row.e,
-                donefortheMonth: row.f,
-                doneUptotheMonth: row.g,
-                arrearsfortheMonth: row.h,
-                arrearsUptotheMonth: row.i,
-                officeInspected: row.j,
+                index: row.a,
+                SNo: row.b,
+                doneBy: row.c,
+                targetfortheYear: row.d,
+                duefortheMonth: row.e,
+                dueUptotheMonth: row.f,
+                donefortheMonth: row.g,
+                doneUptotheMonth: row.h,
+                arrearsfortheMonth: row.i,
+                arrearsUptotheMonth: row.j,
+                officeInspected: row.k,
                 
             })): [],
             
@@ -478,28 +505,30 @@ export const parseExcelFile = async (
             ? parseSheetWithAlphaKeys(sheets.accountInspectionReport).map((row) => ({
                 division,
                 date: formattedDate,
-                SNo: row.a,
-                typeOfReport: row.b, // Type of report
-                positionLhr: row.c, // Position as per LHR
-                openingBalance: row.d,
-                accretion: row.e,
-                clearanceOverOneYear: row.f,
-                clearanceLessThanOneYear: row.g,
-                totalClearance: row.h,
-                closingBalance: row.i,
+                index: row.a,
+                SNo: row.b,
+                typeOfReport: row.c, // Type of report
+                positionLhr: row.d, // Position as per LHR
+                openingBalance: row.e,
+                accretion: row.f,
+                clearanceOverOneYear: row.g,
+                clearanceLessThanOneYear: row.h,
+                totalClearance: row.i,
+                closingBalance: row.j,
             }))
             : [],
-            ageWiseAnalysisAccountsInspection: sheets.ageWiseAnalysisAccountsInspection
+        ageWiseAnalysisAccountsInspection: sheets.ageWiseAnalysisAccountsInspection
             ? parseSheetWithAlphaKeys(sheets.ageWiseAnalysisAccountsInspection).map((row) => ({
                 division,
                 date: formattedDate,
-                SNo: row.a,
-                typeOfReport: row.b, // Type of report
-                closingBalance: row.c, // Closing Balance
-                over6MonthOld: row.d, // Over 6 month old
-                overOneYearOld: row.e, // Over one year old
-                overThreeYearsOld: row.f, // Over 3 years old
-                remarks: row.g, // Remarks
+                index: row.a,
+                SNo: row.b,
+                typeOfReport: row.c, // Type of report
+                closingBalance: row.d, // Closing Balance
+                over6MonthOld: row.e, // Over 6 month old
+                overOneYearOld: row.f, // Over one year old
+                overThreeYearsOld: row.g, // Over 3 years old
+                remarks: row.h, // Remarks
             }))
             : [],
         savingsThroughInternalCheck: sheets.savingsThroughInternalCheck
@@ -508,122 +537,132 @@ export const parseExcelFile = async (
                 .map((row) => ({
                     division,
                     date: formattedDate,
-                    SNo: row.a,
-                    particulars: row.b, // Particulars
-                    actualSavingUpToLastMonth: row.c, // Actual Saving up to last month
-                    savingDuringMonth: row.d, // Saving during the month
-                    savingUpToTheMonth: row.e, // Saving up to the month
+                    index: row.a,
+                    SNo: row.b,
+                    particulars: row.c, // Particulars
+                    actualSavingUpToLastMonth: row.d, // Actual Saving up to last month
+                    savingDuringMonth: row.e, // Saving during the month
+                    savingUpToTheMonth: row.f, // Saving up to the month
                 }))
             : [],
         hqRefPendingWithWorkshop: sheets.hqRefPendingWithWorkshop
             ? parseSheetWithAlphaKeys(sheets.hqRefPendingWithWorkshop).map((row) => ({
                 division,
                 date: formattedDate,
-                SNo: row.a,
-                letterNo: row.b, // Letter No.
-                letterDate: row.c, // Date
-                subject: row.d, // Subject
-                addressedTo: row.e, // Addressed to
-                remarks: row.f, // Remarks
+                index: row.a,
+                SNo: row.b,
+                letterNo: row.c, // Letter No.
+                letterDate: row.d, // Date
+                subject: row.e, // Subject
+                addressedTo: row.f, // Addressed to
+                remarks: row.g, // Remarks
             }))
             : [],
         positionOfReplyToHQDOLetter: sheets.positionOfReplyToHQDOLetter
             ? parseSheetWithAlphaKeys(sheets.positionOfReplyToHQDOLetter).map((row) => ({
                 division,
                 date: formattedDate,
-                SNo: row.a,
-                openingBalance: row.b, // Opening Balance
-                accretion: row.c, // Accretion
-                clearance: row.d, // Clearance
-                closingBalance: row.e, // Closing Balance
-                remarks: row.f, // Remarks
+                index: row.a,
+                SNo: row.b,
+                openingBalance: row.c, // Opening Balance
+                accretion: row.d, // Accretion
+                clearance: row.e, // Clearance
+                closingBalance: row.f, // Closing Balance
+                remarks: row.g, // Remarks
             }))
             : [],
         ncsrpAndPensionPosition: sheets.ncsrpAndPensionPosition
             ? parseSheetWithAlphaKeys(sheets.ncsrpAndPensionPosition).map((row) => ({
                 division,
                 date: formattedDate,
-                SNo: row.a,
-                natureOfWork: row.b, // Nature of Work
-                positionAsPerLHYArrearReport: row.c, // Position as per LHY Arrear Report
-                extentOfArrearsLastMonth: row.d, // Extent of arrears shown in the last month report
-                accretion: row.e, // Accretion
-                clearance: row.f, // Clearance
-                closingBalance: row.g, // Closing Balance
-                increaseOrDecrease: row.h, // Increase (+) / Decrease (-)
-                remarks: row.i, // Remarks
+                index: row.a,
+                SNo: row.b,
+                natureOfWork: row.c, // Nature of Work
+                positionAsPerLHYArrearReport: row.d, // Position as per LHY Arrear Report
+                extentOfArrearsLastMonth: row.e, // Extent of arrears shown in the last month report
+                accretion: row.f, // Accretion
+                clearance: row.g, // Clearance
+                closingBalance: row.h, // Closing Balance
+                increaseOrDecrease: row.i, // Increase (+) / Decrease (-)
+                remarks: row.j, // Remarks
             }))
             : [],
         posOfTransferOfServicecard: sheets.posOfTransferOfServicecard
             ? parseSheetWithAlphaKeys(sheets.posOfTransferOfServicecard).map((row) => ({
                 division,
                 date: formattedDate,
-                Sno: row.a,
-                description: row.b, // Description
-                openingBalance: row.c, // Opening Balance
-                accretion: row.d, // Accretion
-                clearance: row.e, // Clearance
-                closingBalance: row.f, // Closing Balance
-                remarks: row.g, // Remarks
+                index: row.a,
+                Sno: row.b,
+                description: row.c, // Description
+                openingBalance: row.d, // Opening Balance
+                accretion: row.e, // Accretion
+                clearance: row.f, // Clearance
+                closingBalance: row.g, // Closing Balance
+                remarks: row.h, // Remarks
             }))
             : [],
         positionOfStockSheet: sheets.positionOfStockSheet
             ? parseSheetWithAlphaKeys(sheets.positionOfStockSheet).map((row) => ({
                 division,
                 date: formattedDate,
-                item: row.a, // Item
-                openingBalance: row.b, // Opening Balance 1st April 24
-                accretionUpToMonth: row.c, // Accretion up to Month
-                clearanceUpToMonth: row.d, // Clearance Up to Month
-                closingBalance: row.e, // Closing Balance
+                index: row.a,
+                item: row.b, // Item
+                openingBalance: row.c, // Opening Balance 1st April 24
+                accretionUpToMonth: row.d, // Accretion up to Month
+                clearanceUpToMonth: row.e, // Clearance Up to Month
+                closingBalance: row.f, // Closing Balance
             }))
             : [],
         ageWisePositionOfStockSheet: sheets.ageWisePositionOfStockSheet
             ? parseSheetWithAlphaKeys(sheets.ageWisePositionOfStockSheet).map((row) => ({
                 division,
                 date: formattedDate,
-                item: row.a, // Item
-                closingBalance: row.b, // Closing Balance
-                over3MonthsOld: row.c, // Over 3 months old
-                over6MonthsOld: row.d, // Over 6 month old
-                over1YearOld: row.e, // Over 1 year old
-                over3YearsOld: row.f, // Over 3 years old
+                index: row.a,
+                item: row.b, // Item
+                closingBalance: row.c, // Closing Balance
+                over3MonthsOld: row.d, // Over 3 months old
+                over6MonthsOld: row.e, // Over 6 month old
+                over1YearOld: row.f, // Over 1 year old
+                over3YearsOld: row.g, // Over 3 years old
             }))
             : [],
         deptWisePositionStocksheet: sheets.deptWisePositionStocksheet
             ? parseSheetWithAlphaKeys(sheets.deptWisePositionStocksheet).map((row) => ({
                 division,
                 date: formattedDate,
-                SNo: row.a,
-                department: row.b, // Department
-                openingBalance: row.c, // Opening Balance 1st, April-2024
-                accretionUpToMonth: row.d, // Accretion up to Month
-                clearanceUpToMonth: row.e, // Clearance up to Month
-                closingBalance: row.f, // Closing Balance
-                remarks: row.g, // Remarks
+                index: row.a,
+                SNo: row.b,
+                department: row.c, // Department
+                openingBalance: row.d, // Opening Balance 1st, April-2024
+                accretionUpToMonth: row.e, // Accretion up to Month
+                clearanceUpToMonth: row.f, // Clearance up to Month
+                closingBalance: row.g, // Closing Balance
+                remarks: row.h, // Remarks
             }))
             : [],
         staffReferencesOrCases: sheets.staffReferencesOrCases
             ? parseSheetWithAlphaKeys(sheets.staffReferencesOrCases).map((row) => ({
                 division,
                 date: formattedDate,
-                SNo: row.a, // Sr.No.
-                description: row.b, // Description of item
-                openingBalance: row.c, // Opening Balance
-                accretion: row.d, // Accretion
-                clearance: row.e, // Clearance
-                closingBalance: row.f, // Closing Balance
+                index: row.a,
+                SNo: row.b, // Sr.No.
+                description: row.c, // Description of item
+                openingBalance: row.d, // Opening Balance
+                accretion: row.e, // Accretion
+                clearance: row.f, // Clearance
+                closingBalance: row.g, // Closing Balance
             }))
             : [],
         clearanceAndAdjustmentOfMA: sheets.clearanceAndAdjustmentOfMA
             ? parseSheetWithAlphaKeys(sheets.clearanceAndAdjustmentOfMA).map((row) => ({
                 division,
                 date: formattedDate,
-                openingBalance: row.a, // Opening Balance
-                accretion: row.b, // Accretion
-                clearance: row.c, // Clearance
-                closingBalance: row.d, // Closing Balance
-                remarks: row.e, // Remarks
+                index: row.a,
+                openingBalance: row.b, // Opening Balance
+                accretion: row.c, // Accretion
+                clearance: row.d, // Clearance
+                closingBalance: row.e, // Closing Balance
+                remarks: row.f, // Remarks
             }))
             : [],
         progressOfSalaryPayment: sheets.progressOfSalaryPayment
@@ -632,143 +671,155 @@ export const parseExcelFile = async (
                 .map((row) => ({
                     division,
                     date: formattedDate,
-                    item: row.a, // Item
-                    totalNoOfEmployees: row.b, // Total No of Employees
-                    employeesThroughBank: row.c, // No of Employees taking salaries through Bank/Cheque
-                    percentBankCurrentMonth: row.d, // % age bank payment for the current month
-                    percentBankPrevMonth: row.e, // % age bank payment during the previous month
-                    increaseOrDecrease: row.f, // Increase (+) or Decrease (-) with respect to previous month
-                    remarks: row.g, // Remarks
+                    index: row.a,
+                    item: row.b, // Item
+                    totalNoOfEmployees: row.c, // Total No of Employees
+                    employeesThroughBank: row.d, // No of Employees taking salaries through Bank/Cheque
+                    percentBankCurrentMonth: row.e, // % age bank payment for the current month
+                    percentBankPrevMonth: row.f, // % age bank payment during the previous month
+                    increaseOrDecrease: row.g, // Increase (+) or Decrease (-) with respect to previous month
+                    remarks: row.h, // Remarks
                 }))
             : [],
         progressOfEPayment: sheets.progressOfEPayment
             ? parseSheetWithAlphaKeys(sheets.progressOfEPayment).map((row) => ({
                 division,
                 date: formattedDate,
-                totalNoOfStaff: row.a, // Total no. of staff
-                paidThroughEMode: row.b, // Paid through E-mode
-                percentAgeProgressStaff: row.c, // Percent age progress (staff)
-                totalBillsPaid: row.d, // Total Bills paid
-                paidThroughEModeBills: row.e, // Paid through E-Mode (bills)
-                percentAgeProgressBills: row.f, // Percent age progress (bills)
+                index: row.a,
+                totalNoOfStaff: row.b, // Total no. of staff
+                paidThroughEMode: row.c, // Paid through E-mode
+                percentAgeProgressStaff: row.d, // Percent age progress (staff)
+                totalBillsPaid: row.e, // Total Bills paid
+                paidThroughEModeBills: row.f, // Paid through E-Mode (bills)
+                percentAgeProgressBills: row.g, // Percent age progress (bills)
             }))
             : [],
         progressOfSalaryThroughBank: sheets.progressOfSalaryThroughBank
             ? parseSheetWithAlphaKeys(sheets.progressOfSalaryThroughBank).map((row) => ({
                 division,
                 date: formattedDate,
-                type: row.a, // Type
-                noOfStaffAB: row.b, // No of Staff A&B
-                noOfStaffCD: row.c, // No of Staff C&D
-                coverageAB: row.d, // Coverage A&B
-                coverageCD: row.e, // Coverage C&D
-                percentAB: row.f, // % A&B
-                percentCD: row.g, // % C&D
+                index: row.a,
+                type: row.b, // Type
+                noOfStaffAB: row.c, // No of Staff A&B
+                noOfStaffCD: row.d, // No of Staff C&D
+                coverageAB: row.e, // Coverage A&B
+                coverageCD: row.f, // Coverage C&D
+                percentAB: row.g, // % A&B
+                percentCD: row.h, // % C&D
             }))
             : [],
         progressOfSalaryThroughECS: sheets.progressOfSalaryThroughECS
             ? parseSheetWithAlphaKeys(sheets.progressOfSalaryThroughECS).map((row) => ({
                 division,
                 date: formattedDate,
-                type: row.a, // Type
-                numberOfCities: row.b, // Number of cities
+                index: row.a,
+                type: row.b, // Type
+                numberOfCities: row.c, // Number of cities
             }))
             : [],
         plannedImplementationECS: sheets.plannedImplementationECS
             ? parseSheetWithAlphaKeys(sheets.plannedImplementationECS).map((row) => ({
                 division,
                 date: formattedDate,
-                description: row.a, // Description
-                numberOfCities: row.b, // Number of cities
+                index: row.a,
+                description: row.b, // Description
+                numberOfCities: row.c, // Number of cities
             }))
             : [],
         reportOnFacilityAugmentation: sheets.reportOnFacilityAugmentation
             ? parseSheetWithAlphaKeys(sheets.reportOnFacilityAugmentation).map((row) => ({
                 division,
                 date: formattedDate,
-                description: row.a, // Description
-                existingAtStart: row.b, // Existing at the start of
-                additionsDuringMonth: row.c, // Additions during Month
+                index: row.a,
+                description: row.b, // Description
+                existingAtStart: row.c, // Existing at the start of
+                additionsDuringMonth: row.d, // Additions during Month
             }))
             : [],
         testChecksBySS: sheets.testChecksBySS
             ? parseSheetWithAlphaKeys(sheets.testChecksBySSJSSSOSO).map((row) => ({
                 division,
                 date: formattedDate,
-                doneBy: row.a, // Done By
-                annualTarget: row.b, // Annual Target
-                dueForTheMonth: row.c, // Due For the month
-                dueUpToTheMonth: row.d, // Due Up to the month
-                doneForTheMonth: row.e, // Done For the month
-                doneUpToTheMonth: row.f, // Done Up to the month
-                arrearsForTheMonth: row.g, // Arrears For the month
-                arrearsUpToTheMonth: row.h, // Arrears Up to the month
-                subject: row.i, // Subject
+                index: row.a,
+                doneBy: row.b, // Done By
+                annualTarget: row.c, // Annual Target
+                dueForTheMonth: row.d, // Due For the month
+                dueUpToTheMonth: row.e, // Due Up to the month
+                doneForTheMonth: row.f, // Done For the month
+                doneUpToTheMonth: row.g, // Done Up to the month
+                arrearsForTheMonth: row.h, // Arrears For the month
+                arrearsUpToTheMonth: row.i, // Arrears Up to the month
+                subject: row.j, // Subject
             }))
             : [],
         testChecksBySrISA: sheets.testChecksBySrISA
             ? parseSheetWithAlphaKeys(sheets.testChecksBySrISA).map((row) => ({
                 division,
                 date: formattedDate,
-                doneBy: row.a, // Done By
-                annualTarget: row.b, // Annual Target
-                dueForTheMonth: row.c, // Due For the month
-                dueUpToTheMonth: row.d, // Due Up to the month
-                doneForTheMonth: row.e, // Done For the month
-                doneUpToTheMonth: row.f, // Done Up to the month
-                arrearsForTheMonth: row.g, // Arrears For the month
-                arrearsUpToTheMonth: row.h, // Arrears Up to the month
-                subject: row.i, // Subject
+                index: row.a,
+                doneBy: row.b, // Done By
+                annualTarget: row.c, // Annual Target
+                dueForTheMonth: row.d, // Due For the month
+                dueUpToTheMonth: row.e, // Due Up to the month
+                doneForTheMonth: row.f, // Done For the month
+                doneUpToTheMonth: row.g, // Done Up to the month
+                arrearsForTheMonth: row.h, // Arrears For the month
+                arrearsUpToTheMonth: row.i, // Arrears Up to the month
+                subject: row.j, // Subject
             }))
             : [],
         quaterlyTestChecksByJAG: sheets.quaterlyTestChecksByJAG
             ? parseSheetWithAlphaKeys(sheets.quaterlyTestChecksByJAG).map((row) => ({
                 division,
                 date: formattedDate,
-                doneBy: row.a, // Done By
-                annualTarget: row.b, // Annual Target
-                dueForTheMonth: row.c, // Due For the month
-                dueUpToTheMonth: row.d, // Due Up to the month
-                doneForTheMonth: row.e, // Done For the month
-                doneUpToTheMonth: row.f, // Done Up to the month
-                arrearsForTheMonth: row.g, // Arrears For the month
-                arrearsUpToTheMonth: row.h, // Arrears Up to the month
-                subject: row.i, // Subject
+                index: row.a,
+                doneBy: row.b, // Done By
+                annualTarget: row.c, // Annual Target
+                dueForTheMonth: row.d, // Due For the month
+                dueUpToTheMonth: row.e, // Due Up to the month
+                doneForTheMonth: row.f, // Done For the month
+                doneUpToTheMonth: row.g, // Done Up to the month
+                arrearsForTheMonth: row.h, // Arrears For the month
+                arrearsUpToTheMonth: row.i, // Arrears Up to the month
+                subject: row.j, // Subject
             }))
             : [],
         rotationOfStaff: sheets.rotationOfStaff
             ? parseSheetWithAlphaKeys(sheets.rotationOfStaff).map((row) => ({
                 division,
                 date: formattedDate,
-                SNo: row.a, // S No
-                item: row.b, // Item
-                statusAndRemarks: row.c, // Status & remarks
+                index: row.a,
+                SNo: row.b, // S No
+                item: row.c, // Item
+                statusAndRemarks: row.d, // Status & remarks
             }))
             : [],
         miscellaneousItems: sheets.miscellaneousItems
             ? parseSheetWithAlphaKeys(sheets.miscellaneousItems).map((row) => ({
                 division,
                 date: formattedDate,
-                sNo: row.a, // S No
-                itemOfWork: row.b, // Item of work
-                positionAsPerLHR: row.c, // Position as per LHR
-                ob: row.d, // OB
-                accretion: row.e, // Accretion
-                clearance: row.f, // Clearance
-                cb: row.g, // CB
-                remarks: row.h, // Remarks
+                index: row.a,
+                sNo: row.b, // S No
+                itemOfWork: row.c, // Item of work
+                positionAsPerLHR: row.d, // Position as per LHR
+                ob: row.e, // OB
+                accretion: row.f, // Accretion
+                clearance: row.g, // Clearance
+                cb: row.h, // CB
+                remarks: row.i, // Remarks
             }))
             : [],
         completionReports: sheets.completionReports
             ? parseSheetWithAlphaKeys(sheets.completionReports).map((row) => ({
                 division,
                 date: formattedDate,
-                positionAsPerLHR: row.a, // Position as per LHR
-                openingBalanceOn1stApril: row.b, // Opening Balance on 1st April of current FY
-                accretionUpToMonth: row.c, // Accretion up to Month
-                clearanceUpToMonthDuringYear: row.d, // Clearance up to Month During year
-                closingBalanceAsOn: row.e, // Closing Balance as on
-                remarks: row.f, // Remarks
+                index: row.a,
+                positionAsPerLHR: row.b, // Position as per LHR
+                openingBalanceOn1stApril: row.c, // Opening Balance on 1st April of current FY
+                accretionUpToMonth: row.d, // Accretion up to Month
+                clearanceUpToMonthDuringYear: row.e, // Clearance up to Month During year
+                closingBalanceAsOn: row.f, // Closing Balance as on
+                remarks: row.g, // Remarks
             }))
             : [],
         drAndBr: sheets.drAndBr
@@ -776,18 +827,19 @@ export const parseExcelFile = async (
                 division,
                 date: formattedDate,
                 figure: detectFigureUnit(sheets.drAndBr),
-                srNo: row.a, // Sr. No.
-                category: row.b, // Category
-                openingBalanceNoOfItems: row.c, // Opening Balance - No of items
-                openingBalanceAmount: row.d, // Opening Balance - Amount
-                accretionNoOfItems: row.e, // Accretion - No of items
-                accretionAmount: row.f, // Accretion - Amount
-                clearanceNoOfItems: row.g, // Clearance - No of items
-                clearanceAmount: row.h, // Clearance - Amount
-                closingBalanceNoOfItems: row.i, // Closing Balance - No of items
-                closingBalanceAmount: row.j, // Closing Balance - Amount
-                billsOughtToHaveBeenPreferred: row.k, // Bills ought to have been preferred during the year
-                billsActuallyIssued: row.l, // Bills actually issued up to the month
+                index: row.a,
+                srNo: row.b, // Sr. No.
+                category: row.c, // Category
+                openingBalanceNoOfItems: row.d, // Opening Balance - No of items
+                openingBalanceAmount: row.e, // Opening Balance - Amount
+                accretionNoOfItems: row.f, // Accretion - No of items
+                accretionAmount: row.g, // Accretion - Amount
+                clearanceNoOfItems: row.h, // Clearance - No of items
+                clearanceAmount: row.i, // Clearance - Amount
+                closingBalanceNoOfItems: row.j, // Closing Balance - No of items
+                closingBalanceAmount: row.k, // Closing Balance - Amount
+                billsOughtToHaveBeenPreferred: row.l, // Bills ought to have been preferred during the year
+                billsActuallyIssued: row.m, // Bills actually issued up to the month
             }))
             : [],
         positionOfImpRecoverableItems: sheets.positionOfImpRecoverableItems
@@ -795,13 +847,14 @@ export const parseExcelFile = async (
                 division,
                 date: formattedDate,
                 figure: detectFigureUnit(sheets.positionOfImpRecoverableItems),
-                sn: row.a, // SN (Serial Number)
-                nameOfParty: row.b, // Name of party
-                itemsCategory: row.c, // Item's category
-                itemsDescription: row.d, // Item's description
-                period: row.f, // Period
-                amount: row.g, // Amount
-                remarks: row.h, // Remarks
+                index: row.a,
+                sn: row.b, // SN (Serial Number)
+                nameOfParty: row.c, // Name of party
+                itemsCategory: row.d, // Item's category
+                itemsDescription: row.e, // Item's description
+                period: row.g, // Period
+                amount: row.h, // Amount
+                remarks: row.i, // Remarks
             }))
             : [],
         deptWiseRecoverableItems: sheets.deptWiseRecoverableItems
@@ -809,16 +862,17 @@ export const parseExcelFile = async (
                 division,
                 date: formattedDate,
                 figure: detectFigureUnit(sheets.deptWiseRecoverableItems),
-                srNo: row.a, // Sr. No.
-                department: row.b, // Department
-                openingBalanceItem: row.c, // Opening Balance - Item
-                openingBalanceAmount: row.d, // Opening Balance - Amount
-                accretionItem: row.e, // Accretion - Item
-                accretionAmount: row.f, // Accretion - Amount
-                clearanceItem: row.g, // Clearance - Item
-                clearanceAmount: row.h, // Clearance - Amount
-                closingBalanceItem: row.i, // Closing Balance - Item
-                closingBalanceAmount: row.j, // Closing Balance - Amount
+                index: row.a,
+                srNo: row.b, // Sr. No.
+                department: row.c, // Department
+                openingBalanceItem: row.d, // Opening Balance - Item
+                openingBalanceAmount: row.e, // Opening Balance - Amount
+                accretionItem: row.f, // Accretion - Item
+                accretionAmount: row.g, // Accretion - Amount
+                clearanceItem: row.h, // Clearance - Item
+                clearanceAmount: row.i, // Clearance - Amount
+                closingBalanceItem: row.j, // Closing Balance - Item
+                closingBalanceAmount: row.k, // Closing Balance - Amount
             }))
             : [],
         positionOfSpotChecking: sheets.positionOfSpotChecking
@@ -826,10 +880,11 @@ export const parseExcelFile = async (
                 division,
                 date: formattedDate,
                 figure: detectFigureUnit(sheets.positionOfSpotChecking),
-                spotCheckDuringMonth: row.a, // No. of Spot Check - During the month
-                spotCheckUpToMonth: row.b, // No. of Spot Check - Up to the month
-                recoveryDetectedDuringMonth: row.c, // Recovery detected - During the month
-                recoveryDetectedUpToMonth: row.d, // Recovery detected - Up to the month (in unit of Rs.)
+                index: row.a,
+                spotCheckDuringMonth: row.b, // No. of Spot Check - During the month
+                spotCheckUpToMonth: row.c, // No. of Spot Check - Up to the month
+                recoveryDetectedDuringMonth: row.d, // Recovery detected - During the month
+                recoveryDetectedUpToMonth: row.e, // Recovery detected - Up to the month (in unit of Rs.)
             }))
             : [],
         statusOfRevisionOfPension: sheets.statusOfRevisionOfPension
@@ -837,13 +892,14 @@ export const parseExcelFile = async (
                 division,
                 date: formattedDate,
                 figure: detectFigureUnit(sheets.statusOfRevisionOfPension),
-                category: row.a, // Category
-                totalNoOfCasesRequiringRevision: row.b, // Total No. of cases requiring Revision
-                noOfCasesReceivedInAccounts: row.c, // No. of cases received in A/cs
-                noOfCasesRevisedUpToMonth: row.d, // No. of cases revised up to the Jan-2025
-                noOfCasesReturnedUpToMonth: row.e, // No. of cases returned up to the monthJan-2025
-                balanceNoOfCasesUnderProcessInAccounts: row.f, // Balance No. of cases under process in Accounts
-                remarks: row.g, // Remarks
+                index: row.a,
+                category: row.b, // Category
+                totalNoOfCasesRequiringRevision: row.c, // Total No. of cases requiring Revision
+                noOfCasesReceivedInAccounts: row.d, // No. of cases received in A/cs
+                noOfCasesRevisedUpToMonth: row.e, // No. of cases revised up to the Jan-2025
+                noOfCasesReturnedUpToMonth: row.f, // No. of cases returned up to the monthJan-2025
+                balanceNoOfCasesUnderProcessInAccounts: row.g, // Balance No. of cases under process in Accounts
+                remarks: row.h, // Remarks
             }))
             : [],
         assistanceRequiredFromHO: sheets.assistanceRequiredFromHO
@@ -851,230 +907,20 @@ export const parseExcelFile = async (
                 division,
                 date: formattedDate,
                 figure: detectFigureUnit(sheets.assistanceRequiredFromHO),
-                sr: row.a, // Sr
-                suspenseHead: row.b, // Suspense Head
-                item: row.c, // Item
-                amount: row.d, // Amount
-                year: row.e, // Year
-                totalForHead: row.f, // Total for Head
+                index: row.a,
+                sr: row.b, // Sr
+                suspenseHead: row.c, // Suspense Head
+                item: row.d, // Item
+                amount: row.e, // Amount
+                year: row.f, // Year
+                totalForHead: row.g, // Total for Head
             }))
             : [],
-        
-        
-            
-            
-            
-        
-
-
-        // expenditure: sheets.expenditure
-        //   ? parseSheetWithAlphaKeys(sheets.expenditure).map((row) => ({
-        //       division,
-        //       date: formattedDate,
-        //       figure: detectFigureUnit(sheets.expenditure),
-        //       subCategory: row.a,
-        //       actualLastFinancialYear: row.b != null ? +row.b : null,
-        //       targetCurrentFinancialYear: row.c != null ? +row.c : null,
-        //       targetThisMonth: row.d != null ? +row.d : null,
-        //       actualThisMonthLastYear: row.f != null ? +row.f : null,
-        //       actualThisMonth: row.e != null ? +row.e : null,
-        //       targetYTDThisMonth: row.g != null ? +row.g : null,
-        //       actualYTDThisMonthLastYear: row.i != null ? +row.i : null,
-        //       actualYTDThisMonth: row.h != null ? +row.h : null,
-        //     }))
-        //   : [],
-  
-        // phExpenditure: sheets.phExpenditure
-        //   ? parseSheetWithAlphaKeys(sheets.phExpenditure).map((row) => ({
-        //       division,
-        //       date: formattedDate,
-        //       figure: detectFigureUnit(sheets.phExpenditure),
-        //       planHead: row.a,
-        //       actualLastYear: row.b != null ? +row.b : null,
-        //       targetLastYear: row.c != null ? +row.c : null,
-        //       actualUpToTheMonth: row.e != null ? +row.e : null,
-        //       actualUpToTheMonthLastYear: row.f != null ? +row.f : null,
-        //       actualForTheMonth: row.d != null ? +row.d : null,
-        //     }))
-        //   : [],
-  
-        // earning: sheets.earning
-        //   ? parseSheetWithAlphaKeys(sheets.earning).map((row) => ({
-        //       division,
-        //       date: formattedDate,
-        //       figure: detectFigureUnit(sheets.earning),
-        //       subCategory: row.a,
-        //       actualLastFinancialYear: row.b != null ? +row.b : null,
-        //       targetThisMonth: row.c != null ? +row.c : null,
-        //       actualThisMonthLastYear: row.e != null ? +row.e : null,
-        //       actualThisMonth: row.d != null ? +row.d : null,
-        //       targetYTDThisMonth: row.f != null ? +row.f : null,
-        //       actualYTDThisMonthLastYear: row.h != null ? +row.h : null,
-        //       actualYTDThisMonth: row.g != null ? +row.g : null,
-        //     }))
-        //   : [],
-  
-        // recoverable: sheets.recoverable
-        //   ? parseSheetWithAlphaKeys(sheets.recoverable).map((row) => {
-        //       return {
-        //         division,
-        //         date: formattedDate,
-        //         figure: detectFigureUnit(sheets.recoverable),
-        //         type: row.a,
-        //         category: row.b,
-        //         openingBalance: row.d != null ? +row.d : 0,
-        //         accretionUptoTheMonth: row.f != null ? +row.f : 0,
-        //         clearanceUptoMonth: row.h != null ? +row.h : 0,
-        //         closingBalance: row.j != null ? +row.j : 0,
-        //       };
-        //     })
-        //   : [],
-  
-        // dwRecoverable: sheets.dwRecoverable
-        //   ? parseSheetWithAlphaKeys(sheets.dwRecoverable).map((row) => ({
-        //       division,
-        //       department: row.b,
-        //       date: formattedDate,
-        //       figure: detectFigureUnit(sheets.dwRecoverable),
-        //       openingBalance: row.d != null ? +row.d : 0,
-        //       openingBalanceItem: row.c != null ? +row.c : 0,
-        //       accretionUptoTheMonth: row.f != null ? +row.f : 0,
-        //       accretionUptoTheMonthItem: row.e != null ? +row.e : 0,
-        //       clearanceUptoMonth: row.h != null ? +row.h : 0,
-        //       clearanceUptoMonthItem: row.g != null ? +row.g : 0,
-        //       closingBalance: row.j != null ? +row.j : 0,
-        //       closingBalanceItem: row.i != null ? +row.i : 0,
-        //     }))
-        //   : [],
-  
-        // suspenseBalance: sheets.suspenseBalances
-        //   ? parseSheetWithAlphaKeys(sheets.suspenseBalances).map((row) => ({
-        //       division,
-        //       date: formattedDate,
-        //       figure: detectFigureUnit(sheets.suspenseBalances),
-  
-        //       // treat missing or "-" as null
-        //       suspenseHeads: row.b != null && row.b !== "-" ? row.b : null,
-  
-        //       position: row.d != null && row.d !== "-" ? +row.d : null,
-  
-        //       positionItem: row.c != null && row.c !== "-" ? +row.c : null,
-  
-        //       positionLhr: row.f != null && row.f !== "-" ? +row.f : null,
-  
-        //       positionLhrItem: row.e != null && row.e !== "-" ? +row.e : null,
-  
-        //       closingBalance: row.h != null && row.h !== "-" ? +row.h : null,
-  
-        //       closingBalanceItem: row.g != null && row.g !== "-" ? +row.g : null,
-  
-        //       reconciliationMonth: row.i != null && row.i !== "-" ? row.i : null,
-        //     }))
-        //   : [],
-  
-        // auditObjection: sheets.auditObjections
-        //   ? parseSheetWithAlphaKeys(sheets.auditObjections).map((row) => ({
-        //       division,
-        //       date: formattedDate,
-        //       figure: detectFigureUnit(sheets.auditObjections),
-        //       auditObjection: row.a,
-        //       positionLhr: row.b != null ? +row.b : 0,
-        //       openingBalance: row.c != null ? +row.c : 0,
-        //       accretion: row.d != null ? +row.d : 0,
-        //       closingBalance: row.h != null ? +row.h : 0,
-        //       clearenceOverOneYear: row.e != null ? +row.e : 0,
-        //       clearenceLessOneYear: row.f != null ? +row.f : 0,
-        //     }))
-        //   : [],
-  
-        // accountInspection: sheets.accountInspections
-        //   ? parseSheetWithAlphaKeys(sheets.accountInspections).map((row) => ({
-        //       division,
-        //       date: formattedDate,
-        //       figure: detectFigureUnit(sheets.accountInspections),
-        //       typeOfReport: row.b,
-        //       positionLhr: row.c != null ? +row.c : 0,
-        //       openingBalance: row.d != null ? +row.d : 0,
-        //       accretion: row.e != null ? +row.e : 0,
-        //       clearanceOverOneYear: row.f != null ? +row.f : 0,
-        //       clearanceLessThanOneYear: row.g != null ? +row.g : 0,
-        //       totalClearance: row.h != null ? +row.h : 0,
-        //       closingBalance: row.i != null ? +row.i : 0,
-        //     }))
-        //   : [],
-  
-        // completionReports: sheets.completionReports
-        //   ? parseSheetWithHeaders(sheets.completionReports).map((row: any) => {
-        //       const positionKey = Object.keys(row).find((key) =>
-        //         key.trim().toLowerCase().startsWith("position")
-        //       );
-  
-        //       return {
-        //         department: row["Department"] ?? null,
-        //         positionAsLastYearMonth: row[positionKey ?? "Position"] ?? 0,
-        //         accretionUpToMonth: row["Accretion up to month"] ?? 0,
-        //         clearanceUpToMonth: row["Clearance up to month"] ?? 0,
-        //         closingBalance: row["Closing Balance"] ?? 0,
-        //         oldestCrPending: row["Oldest C.R. pending"] ?? null,
-        //         division,
-        //         date: formattedDate,
-        //       };
-        //     })
-        //   : [],
-  
-        // stocksheets: sheets.stocksheets
-        //   ? parseSheetWithHeaders(sheets.stocksheets).map((row) => ({
-        //       department: row["Department"] ?? null,
-        //       openingBalanceAsLastYearMonth: row["Opening Balance"] ?? 0,
-        //       accretionUpToMonth: row["Accretion up to month"] ?? 0,
-        //       clearanceUpToMonth: row["Clearance up to month"] ?? 0,
-        //       closingBalance: row["Closing Balance"] ?? 0,
-        //       remarks: row["Remarks"] ?? null,
-        //       division,
-        //       date: formattedDate,
-        //     }))
-        //   : [],
-  
-        // settlementcases: sheets.settlementcases
-        //   ? parseSheetWithHeaders(sheets.settlementcases).map((row) => ({
-        //       item: row["Item"] ?? null,
-        //       openingBalanceMonth: row["Opening balance of the month"] ?? 0,
-        //       accretionDuringMonth: row["Accretion during the month"] ?? 0,
-        //       clearedDuringMonth: row["Cleared during the month"] ?? 0,
-        //       closingOutstanding: row["Closing outstanding"] ?? 0,
-        //       division,
-        //       date: formattedDate,
-        //     }))
-        //   : [],
-  
-        // savingthroughic: sheets.savingthroughic
-        //   ? parseSheetWithHeaders(sheets.savingthroughic).map((row) => ({
-        //       actualUpToLastMonth: row["Actual up to last month"] ?? 0,
-        //       figure: detectFigureUnit(sheets.savingthroughic),
-        //       forTheMonth: row["For the month"] ?? 0,
-        //       totalToEndOfMonth: row["Total to end of the month"] ?? 0,
-        //       remarks: row["Remarks"],
-        //       division,
-        //       date: formattedDate,
-        //     }))
-        //   : [],
-        // rbinspection: sheets.rbinspection
-        //   ? parseSheetWithHeaders(sheets.rbinspection).map((row) => ({
-        //       yearOfReport: row["Year of Report"] ?? null,
-        //       typeOfPara: row["Type of para"] ?? null,
-        //       totalParas: row["Total no. of Paras"] ?? 0,
-        //       parasAtStartOfMonth: row["Paras o/s at the start of month"] ?? 0,
-        //       closedDuringMonth: row["Closed during the month"] ?? 0,
-        //       parasOutstanding: row["No. of paras Outstanding"] ?? 0,
-        //       remarks: row["Remarks"] ?? null,
-        //       division,
-        //       date: formattedDate,
-        //     }))
-        //   : [],
   
         selectedMonthYear,
         division,
       };
+      console.log("workingExpenditure",finalData.workingExpenditure)
   
       const enrichedData = data.map((item) => ({
         ...item,

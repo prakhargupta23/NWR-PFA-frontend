@@ -26,7 +26,7 @@ import { marked } from "marked";
 import DOMPurify from "dompurify";
 import parse from "html-react-parser";
 import { set } from "lodash";
-import { motion } from "framer-motion";
+import { color, motion } from "framer-motion";
 import { userInfo } from "os";
 import { generatePrompt } from "../utils/otherUtils";
 
@@ -295,8 +295,7 @@ export default function ChatInterface({ fullNavBar, pageNmae }: any) {
           top: 0,
           left: 0,
           // background: "#fff",
-          background:
-            "radial-gradient(137.56% 745.22% at 27.41% 80%, #7328EB 0%, #B72BF8 100%)",
+          
           filter: "blur(100px)", // Adjust blur intensity (600px is too strong)
           zIndex: -1, // Place behind the Paper
         }}
@@ -310,7 +309,7 @@ export default function ChatInterface({ fullNavBar, pageNmae }: any) {
           display: "flex",
           flexDirection: "column",
           // background: "rgba(56, 38, 96, 0.7)", // Slight transparency to show the blur
-          background: "rgba(255,255,255,0.5)",
+          background: "rgba(0,0,0,0.5)",
           color: "#000",
           border: "1px solid #B72BF8",
           position: "relative", // Ensure it stays above the blurred background
@@ -347,7 +346,7 @@ export default function ChatInterface({ fullNavBar, pageNmae }: any) {
                   variant="h6"
                   sx={{
                     fontWeight: "700",
-                    color: "rgba(0,0,0,0.8)",
+                    color: "rgba(255,255,255,0.8)",
                     fontFamily: "MyCustomFont,SourceSerif4_18pt",
                   }}
                 >
@@ -356,7 +355,7 @@ export default function ChatInterface({ fullNavBar, pageNmae }: any) {
                 <Typography
                   sx={{
                     fontSize: "14px",
-                    color: "rgba(0,0,0,0.8)",
+                    color: "rgba(255,255,255,0.8)",
                     mt: 1,
                     fontFamily: "MyCustomFont,SourceSerif4_18pt",
                   }}
@@ -572,7 +571,7 @@ export default function ChatInterface({ fullNavBar, pageNmae }: any) {
                       {msg.role === "user" ? (
                         <IconButton
                           sx={{
-                            backgroundColor: "#000",
+                            backgroundColor: "rgba(0,0,0,0.7)",
                             color: "#000",
                             width: "40px",
                             height: "40px",
@@ -585,7 +584,7 @@ export default function ChatInterface({ fullNavBar, pageNmae }: any) {
                             },
                           }}
                         >
-                          <AccountCircleIcon sx={{ fontSize: "20px" }} />
+                          <AccountCircleIcon sx={{ fontSize: "20px", color: "white" }} />
                         </IconButton>
                       ) : null}
                     </Box>

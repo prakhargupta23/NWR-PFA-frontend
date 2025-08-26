@@ -27,17 +27,116 @@ import DynamicFormModal from "../modules/PromptModal";
 import { CsvModal } from "../modules/CsvModal";
 import { sqlService } from "../services/sqldata.service";
 import WorkshopTopAppBar from "../modules/WorkshopTopAppBar";
-import Expenditure from "../Components/Pfa/Expenditure";
-import Recoverable from "../Components/Pfa/Recoverable";
-import PerformanceIndex from "../Components/Pfa/PerformanceIndex";
-import OriginatingEarnings from "../Components/Pfa/OriginatingEarnings";
-import PHExpenditure from "../Components/Pfa/PHExpenditure";
-import LeaderBoard from "../modules/LeaderBoard";
-import { humanLabel, sheetOptions } from "../utils/staticDataUtis";
-
-import { formatHeader, formatSheetName } from "../utils/otherUtils";
-import SheetTable from "../Components/Pfa/SheetTable";
 import NewsFeed from "../modules/NewsFeed";
+import WorkshopTable from "../Components/workshop/WorkshopTable";
+import WorkingExpenditure from "../Components/workshop/WorkingExpenditure";
+import PlanHead from "../Components/workshop/PlanHead";
+import VantaBackground from "../modules/Bird-bg";
+
+// Workshop table names
+const workshopTableNames = [
+  "workingExpenditure",
+  "planHead",
+  "manufacturingSuspense",
+  // "wmsBalance",
+  // "wmsClosingBalance",
+  // "wmsBalanceAnalysis",
+  // "wmsStoreCharges",
+  // "positionofDirectPurchase",
+  // "comparativePositionofOutturn",
+  // "pohUnitCost",
+  // "postingandReconciliation",
+  "itemPositioninSuspenseRegister",
+  "unsanctionedExpenditure",
+  "inspectionPara",
+  "outstandingAuditObjection",
+  "analysisOfAuditReference",
+  // "positionOfAccountInspection",
+  // "accountInspectionofOffices",
+  // "accountInspectionReport",
+  // "ageWiseAnalysisAccountsInspection",
+  // "savingsThroughInternalCheck",
+  // "positionOfReplyToHQDOLetter",
+  // "hqRefPendingWithWorkshop",
+  // "ncsrpAndPensionPosition",
+  "posOfTransferOfServicecard",
+  "positionOfStockSheet",
+  "ageWisePositionOfStockSheet",
+  "deptWisePositionStocksheet",
+  // "staffReferencesOrCases",
+  // "clearanceAndAdjustmentOfMA",
+  // "progressOfSalaryPayment",
+  // "progressOfEPayment",
+  // "progressOfSalaryThroughBank",
+  // "progressOfSalaryThroughECS",
+  // "plannedImplementationECS",
+  // "reportOnFacilityAugmentation",
+  // "testChecksBySS",
+  // "testChecksBySrISA",
+  // "quaterlyTestChecksByJAG",
+  // "rotationOfStaff",
+  // "miscellaneousItems",
+  // "completionReports",
+  // "drAndBr",
+  // "positionOfImpRecoverableItems",
+  // "deptWiseRecoverableItems",
+  // "positionOfSpotChecking",
+  // "statusOfRevisionOfPension",
+  // "assistanceRequiredFromHO"
+];
+
+// Human-readable labels for table names
+const tableNameLabels: { [key: string]: string } = {
+  workingExpenditure: "Working Expenditure",
+  planHead: "Plan Head",
+  manufacturingSuspense: "Manufacturing Suspense",
+  // wmsBalance: "WMS Balance",
+  // wmsClosingBalance: "WMS Closing Balance",
+  // wmsBalanceAnalysis: "WMS Balance Analysis",
+  // wmsStoreCharges: "Stores Charges to WMS",
+  // positionofDirectPurchase: "Position of Direct Purchase",
+  // comparativePositionofOutturn: "Comparative position of Outturn",
+  // pohUnitCost: "POH Unit Cost for the Month",
+  // postingandReconciliation: "Posting and Reconciliation",
+  itemPositioninSuspenseRegister: "Position of Items in Susp. Reg.",
+  unsanctionedExpenditure: "Unsanctioned Expenditure",
+  inspectionPara: "Railway Board Inspection Para",
+  outstandingAuditObjection: "Outstanding Audit Objection",
+  analysisOfAuditReference: "Analysis of Audit Reference",
+  // positionOfAccountInspection: "Position Of Account Inspections",
+  // accountInspectionofOffices: "Account Inspection of Offices",
+  // accountInspectionReport: "Position of Acc Inspection Reports",
+  // ageWiseAnalysisAccountsInspection: "AgeWise Analysis Acc Inspection",
+  // savingsThroughInternalCheck: "Savings through Internal Check",
+  // positionOfReplyToHQDOLetter: "Position of Reply to HQ DO Letter",
+  // hqRefPendingWithWorkshop: "HQ Ref. Pending with workshop",
+  // ncsrpAndPensionPosition: "NCSRP & Pension Position",
+  posOfTransferOfServicecard: "Pos. of transfer of servicecard",
+  positionOfStockSheet: "Position of StockSheet",
+  ageWisePositionOfStockSheet: "AgeWise Position of StockSheet",
+  deptWisePositionStocksheet: "DeptWise Position Stocksheet",
+  // staffReferencesOrCases: "Staff References or Cases",
+  // clearanceAndAdjustmentOfMA: "Clearance and adjustment of MA",
+  // progressOfSalaryPayment: "Progress of Salary Payment",
+  // progressOfEPayment: "Progress Of E-Payment",
+  // progressOfSalaryThroughBank: "Progress of Salary through bank",
+  // progressOfSalaryThroughECS: "Progress of Salary through ECS",
+  // plannedImplementationECS: "Planned Implementation ECS",
+  // reportOnFacilityAugmentation: "Report on facility augmentation",
+  // testChecksBySS: "Test checks by SS,JS,SSO,SO",
+  // testChecksBySrISA: "Test checks by Sr.ISA",
+  // quaterlyTestChecksByJAG: "Quaterly test checks by JAG",
+  // rotationOfStaff: "Rotation of Staff",
+  // miscellaneousItems: "Miscellaneous Items",
+  // completionReports: "Completion Reports",
+  // drAndBr: "DR & BR",
+  // positionOfImpRecoverableItems: "Pos. of Imp Recoverable Items",
+  // deptWiseRecoverableItems: "Dept. wise recoverable items",
+  // positionOfSpotChecking: "Position of Spot Checking",
+  // statusOfRevisionOfPension: "Status of Revision of Pension",
+  // assistanceRequiredFromHO: "Assistance required from HO"
+};
+
 Chart.register(...registerables);
 const MONTHS = [
   "January",
@@ -53,51 +152,10 @@ const MONTHS = [
   "November",
   "December",
 ];
-const renderComponent = (
-  categoryType: any,
-  reloadGraph: any,
-  pieData: any,
-  setPieData: any,
-  setDataLoading: any
-) => {
-  switch (categoryType) {
-    case "Expenditure":
-    case "Earning":
-      return (
-        <Expenditure
-          type={categoryType}
-          reloadGraph={reloadGraph}
-          setPieData={setPieData}
-          setDataLoading={setDataLoading}
-        />
-      );
-    case "PHExpenditure":
-      return (
-        <PHExpenditure />
-      );
-    case "Recoverable":
-      return <Recoverable type={categoryType} reloadGraph={reloadGraph} />;
-    case "PerformanceIndex":
-      return (
-        <PerformanceIndex
-          getDivisionName={(division: string) => `Division ${division}`}
-        />
-      );
-    case "OriginatingEarnings":
-      return (
-        <OriginatingEarnings
-          getDivisionName={(division: string) => `Division ${division}`}
-        />
-      );
-
-    default:
-      return <SheetTable sheetName={categoryType} />;
-  }
-};
 
 const logoImage = require("../assets/logo.png");
 
-export default function PFAPage() {
+export default function WorkshopPage() {
   const [selectedButton, setSelectedButton] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [openPromptModal, setOpenPromptModal] = useState(false);
@@ -106,7 +164,7 @@ export default function PFAPage() {
   const [dataLoading, setDataLoading] = useState(false);
   const [reloadGraph, setReloadGraph] = useState(false);
 
-  const [categoryType, setCategoryType] = useState("Expenditure");
+  const [categoryType, setCategoryType] = useState("workingExpenditure");
   const [selectedMonth, setSelectedMonth] = useState<string>(
     MONTHS[new Date().getMonth()]
   );
@@ -354,19 +412,20 @@ export default function PFAPage() {
   }
 
   return (
-    <div
-      style={{
-        width: "100vw",
-        height: "100vh", // Full viewport height
-        display: "flex",
-        flexDirection: "column",
-        backgroundColor: "#101319",
-        alignItems: "center",
-        overflowY: "hidden",
-        paddingBottom: "10px",
-        overflowX: "hidden",
-      }}
-    >
+    <VantaBackground>
+      <div
+        style={{
+          width: "100vw",
+          height: "100vh", // Full viewport height
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          overflowY: "hidden",
+          paddingBottom: "10px",
+          overflowX: "hidden",
+          position: "relative",
+        }}
+      >
       <WorkshopTopAppBar
         setDeleteModalOpen={(open) => setDeleteModalOpen(open)}
         deleteLoading={deleteLoading}
@@ -381,6 +440,8 @@ export default function PFAPage() {
         reloadGraph={reloadGraph}
         setReloadGraph={setReloadGraph}
       />
+
+      
       {/* Main Content Section */}
       <Box
         sx={{
@@ -415,7 +476,7 @@ export default function PFAPage() {
               alignItems: "center",
             }}
           >
-            {/* Pension Graph Title */}
+            {/* Workshop Table Selection */}
             <Box
               sx={{
                 width: "100%",
@@ -423,7 +484,6 @@ export default function PFAPage() {
                 flexDirection: "row",
                 justifyContent: "flex-start",
                 alignItems: "center",
-
                 padding: 0,
               }}
             >
@@ -440,8 +500,7 @@ export default function PFAPage() {
                   justifyContent: "space-between",
                   display: "flex",
                   alignItems: "center",
-
-                  width: "197px",
+                  width: "350px",
                   fontFamily: "MyCustomFont,SourceSerif4_18pt",
                   marginBottom: "16px",
                   "& .MuiSelect-icon": {
@@ -451,15 +510,16 @@ export default function PFAPage() {
                 MenuProps={{
                   PaperProps: {
                     sx: {
-                      backgroundColor: "#36314f", // Black background for dropdown
-                      color: "#fff", // White text color
+                      backgroundColor: "#36314f",
+                      color: "#fff",
+                      maxHeight: "300px",
                     },
                   },
                 }}
               >
-                {sheetOptions.map((opt) => (
-                  <MenuItem key={opt} value={opt}>
-                    {formatSheetName(opt)}
+                {workshopTableNames.map((tableName) => (
+                  <MenuItem key={tableName} value={tableName}>
+                    {tableNameLabels[tableName]}
                   </MenuItem>
                 ))}
               </Select>
@@ -488,12 +548,12 @@ export default function PFAPage() {
                 },
               }}
             >
-              {renderComponent(
-                categoryType,
-                reloadGraph,
-                pieData,
-                setPieData,
-                setDataLoading
+              {categoryType === "workingExpenditure" ? (
+                <WorkingExpenditure />
+              ) : categoryType === "planHead" ? (
+                <PlanHead />
+              ) : (
+                <WorkshopTable selectedTable={categoryType} />
               )}
             </Paper>
           </Grid>
@@ -702,7 +762,7 @@ export default function PFAPage() {
             {/* File Upload Section (If Needed) */}
 
             {/* Buttons */}
-            <Grid item xs={12}>
+            {/* <Grid item xs={12}>
               {loading ? (
                 <Container
                   sx={{
@@ -741,7 +801,7 @@ export default function PFAPage() {
                     : "Upload Sbi Data"}
                 </Button>
               )}
-            </Grid>
+            </Grid> */}
           </Grid>
         </Box>
       </Modal>
@@ -765,12 +825,12 @@ export default function PFAPage() {
             textAlign: "center",
           }}
         >
-          <Typography
+          {/* <Typography
             variant="h6"
             sx={{ mb: 2, fontFamily: "MyCustomFont,SourceSerif4_18pt" }}
           >
             Are you sure you want to delete all the debit scroll data?
-          </Typography>
+          </Typography> */}
           <Box sx={{ display: "flex", justifyContent: "center", gap: 2 }}>
             {deleteLoading ? (
               <IconButton sx={{ color: "white", minWidth: 40, minHeight: 40 }}>
@@ -802,6 +862,7 @@ export default function PFAPage() {
         openCsvModal={openCsvModal}
       />
     </div>
+    </VantaBackground>
   );
 }
 function setLoading(arg0: boolean) {

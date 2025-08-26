@@ -113,7 +113,7 @@ export default function TopAppBar({
       <AppBar
         position="static"
         sx={{
-          backgroundColor: "#101319",
+          backgroundColor: "rgba(0,0,0,0.5)",
           height: "88px",
           display: "flex",
           flexDirection: "row",
@@ -152,7 +152,7 @@ export default function TopAppBar({
                     textTransform: "none",
                   }}
                 >
-                  NWR Finance & Accounts
+                  NWR PFA Portal
                 </Typography>
                 <Typography
                   variant="h6"

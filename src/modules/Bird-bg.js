@@ -1,13 +1,14 @@
+// VantaBackground.js
 import React, { useEffect, useRef } from "react";
 import * as THREE from "three";
-import BIRDS from "vanta/dist/vanta.birds.min";
+import WAVES from "vanta/dist/vanta.waves.min";
 import "./VantaBackground.css";
 
 export default function VantaBackground({ children }) {
   const vantaRef = useRef(null);
 
   useEffect(() => {
-    const effect = BIRDS({
+    const effect = WAVES({
       el: vantaRef.current,
       THREE,
       mouseControls: true,
@@ -17,14 +18,11 @@ export default function VantaBackground({ children }) {
       minWidth: 200.0,
       scale: 1.0,
       scaleMobile: 1.0,
-      color1: 0x8fd3ff, // light blue
-      color2: 0xbbe7ff, // lighter blue
-      quantity: 10.0, // more birds
-      backgroundAlpha: 0.0, // draw over page bg
-      birdSize: 1, // larger for visibility
-      separation: 50.0,
-      alignment: 50.0,
-      cohesion: 50.0,
+      color: 0x5788, // main wave color
+      shininess: 50.0,
+      waveHeight: 20.0,
+      waveSpeed: 1.0,
+      zoom: 0.75,
     });
 
     return () => {
