@@ -157,6 +157,8 @@ function MultiDivisionMetricBarGraph({
   stackId = false,
   graphType,
 }: Props) {
+
+  console.log("simple bar graph data",data,stackId,graphType)
   const isSmallScreen = useMediaQuery("(max-width: 700px)");
 
   // Tooltip state
@@ -176,6 +178,7 @@ function MultiDivisionMetricBarGraph({
 
   // Get all metric keys (excluding 'division')
   const keys = Object.keys(data[0]).filter((k) => k !== "division");
+  
 
   return (
     <Box

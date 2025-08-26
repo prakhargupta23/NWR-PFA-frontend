@@ -37,14 +37,25 @@ const divisionColorMap = divisions.reduce((acc, division) => {
 
 // Track the current color index per division to assign unique shades
 const divisionColorIndexTracker: Record<string, number> = {};
+// Display names for data type keys used in Trend view
+const dataTypeDisplayNameMap: Record<string, string> = {
+  BPfortheMonth: "Target",
+  ActualfortheMonthCurrentYear: "Actual",
+  ActualfortheMonthLastYear: "LFY",
+  Actual: "LFY Actual",
+  RBG: "CFY Target",
+  BPtoendofMonth: "CFY YTD Target",
+  ActualtotheEndofMonthCurrentYear: "CFY YTD Actual",
+  ActualtoendofMonthLastYear: "LFY YTD Actual",
+};
 const formatName = (name: string): string => {
   const [division, label] = name.split(" - ");
 
   if (!label) return name; // In case "-" is not present
 
   const trimmedLabel = label.trim();
-  const formattedLabel =
-    trimmedLabel.charAt(0).toUpperCase() + trimmedLabel.slice(1);
+  const mapped = dataTypeDisplayNameMap[trimmedLabel] || trimmedLabel;
+  const formattedLabel = mapped.charAt(0).toUpperCase() + mapped.slice(1);
 
   return `${division} - ${formattedLabel}`;
 };
@@ -394,8 +405,7 @@ const TrendBarGraph = ({
                       whiteSpace: "nowrap",
                     }}
                   >
-                    {division} {"-"}{" "}
-                    {formatKeyToLabel(category.split(" - ")[1])}
+                    {formatName(category)}
                   </Typography>
                 </Box>
               );
@@ -460,7 +470,7 @@ const TrendBarGraph = ({
                 return (
                   <Bar
                     key={category}
-                    name={formatKeyToLabel(category)}
+                    name={formatName(category)}
                     dataKey={category}
                     fill={categoryColorMap[category]}
                     barSize={30}

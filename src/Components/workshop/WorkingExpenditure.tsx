@@ -23,12 +23,14 @@ import { WorkshopService } from "../../services/workshop.service";
 
 function WorkingExpenditure() {
   const desiredKeyOrderForComparisonForExpenditureEarning = [
-    "ActualfortheMonthLastYear",
     "BPfortheMonth",
     "ActualfortheMonthCurrentYear",
-    "ActualtoendofMonthLastYear",
+    "ActualfortheMonthLastYear",
+    "Actual",
+    "RBG",
     "BPtoendofMonth",
     "ActualtotheEndofMonthCurrentYear",
+    "ActualtoendofMonthLastYear",
   ];
   const [division, setDivision] = useState<string[]>(["Ajmer"]);
   const [selectedDataType, setSelectedDataType] = useState<string[]>([
@@ -78,6 +80,17 @@ function WorkingExpenditure() {
     "ActualtotheEndofMonthCurrentYear",
     "ActualtoendofMonthLastYear",
   ];
+  // Display names for Trend checkboxes (mapped to new labels)
+  const dataTypeDisplayNameMap: Record<string, string> = {
+    BPfortheMonth: "Target",
+    ActualfortheMonthCurrentYear: "Actual",
+    ActualfortheMonthLastYear: "LFY",
+    Actual: "LFY Actual",
+    RBG: "CFY Target",
+    BPtoendofMonth: "CFY YTD Target",
+    ActualtotheEndofMonthCurrentYear: "CFY YTD Actual",
+    ActualtoendofMonthLastYear: "LFY YTD Actual",
+  };
   const [varianceData, setVarianceData] = useState<any[]>([]);
   const [uniqueCategories, setUniqueCategories] = useState<any[]>([]);
 
@@ -187,11 +200,28 @@ function WorkingExpenditure() {
 
   const processBarData = () => {
     const selectedMonthYear = toNumericMonthYear(selectedDate.month, selectedDate.year);
+    console.log("initial data",rawData)
+    const keyNamesChangedData = rawData.map(item => ({
+      index: item.index,
+      division: item.division,
+      date: item.date,
+      figure: item.figure,
+      DemandNo: item.DemandNo,
+      "Target": item.BPfortheMonth,
+      "Actual": item.ActualfortheMonthCurrentYear,
+      "LFY": item.ActualfortheMonthLastYear,
+      "LFY Actual": item.Actual,
+      "CFY Target": item.RBG,
+      "CFY YTD Target": item.BPtoendofMonth,
+      "CFY YTD Actual": item.ActualtotheEndofMonthCurrentYear,
+      "LFY YTD Actual": item.ActualtoendofMonthLastYear,
+    }));
+    console.log("Name changed data",keyNamesChangedData)
 
-    const monthData = rawData.filter(
+    const monthData = keyNamesChangedData.filter(
       (item) => item.date === selectedMonthYear
     );
-
+    console.log("Month data",monthData)
     if (!monthData || monthData.length === 0) {
       setLocalData([]);
       setUniqueCategories([]);
@@ -199,7 +229,7 @@ function WorkingExpenditure() {
     }
 
     const cleanedMonthData = monthData.map(
-      ({ date, subCategory, ...rest }) => ({
+      ({ date, ...rest }) => ({
         ...rest,
       })
     );
@@ -241,26 +271,53 @@ function WorkingExpenditure() {
         divisionsName.indexOf(b.division)
       );
     });
-
+    console.log("formatted dar data",formattedBarData)
     setUniqueCategories([]);
     setLocalData(formattedBarData);
+    console.log("local data",localData)
   };
 
   const processComparisonData = () => {
-    const comparisonKeys = desiredKeyOrderForComparisonForExpenditureEarning;
-
+    // Remap keys to human-friendly labels (same as in processBarData)
     const selectedMonthYear = toNumericMonthYear(selectedDate.month, selectedDate.year);
+    const mappedData = rawData.map(item => ({
+      index: (item as any).index,
+      division: (item as any).division,
+      date: (item as any).date,
+      figure: (item as any).figure,
+      DemandNo: (item as any).DemandNo,
+      Target: (item as any).BPfortheMonth,
+      Actual: (item as any).ActualfortheMonthCurrentYear,
+      LFY: (item as any).ActualfortheMonthLastYear,
+      "LFY Actual": (item as any).Actual,
+      "CFY Target": (item as any).RBG,
+      "CFY YTD Target": (item as any).BPtoendofMonth,
+      "CFY YTD Actual": (item as any).ActualtotheEndofMonthCurrentYear,
+      "LFY YTD Actual": (item as any).ActualtoendofMonthLastYear,
+    }));
 
-    const filteredDataForMonth = rawData.filter(
+    const filteredDataForMonth = mappedData.filter(
       (item) => item.date === selectedMonthYear
     );
+
+    // Desired order for comparison using mapped keys
+    const comparisonKeys = [
+      "Target",
+      "Actual",
+      "LFY",
+      "LFY Actual",
+      "CFY Target",
+      "CFY YTD Target",
+      "CFY YTD Actual",
+      "LFY YTD Actual",
+    ];
 
     const comparisonData: Record<string, Record<string, number>> = {};
 
     filteredDataForMonth.forEach((item) => {
       const { division } = item;
 
-      comparisonKeys.forEach((key: any) => {
+      comparisonKeys.forEach((key: string) => {
         if (!comparisonData[key]) {
           comparisonData[key] = {};
         }
@@ -290,8 +347,8 @@ function WorkingExpenditure() {
     const formattedComparisonDataSorted = formattedComparisonData
       .sort((a, b) => {
         return (
-          desiredKeyOrderForComparisonForExpenditureEarning.indexOf(a.key) -
-          desiredKeyOrderForComparisonForExpenditureEarning.indexOf(b.key)
+          comparisonKeys.indexOf(a.key) -
+          comparisonKeys.indexOf(b.key)
         );
       })
       .map((item: any) => {
@@ -308,7 +365,7 @@ function WorkingExpenditure() {
 
     setUniqueCategories(
       Object.keys(
-        filteredDataForMonth.reduce((acc, item) => {
+        filteredDataForMonth.reduce((acc: any, item) => {
           acc[item.division] = true;
           return acc;
         }, {})
@@ -319,9 +376,26 @@ function WorkingExpenditure() {
   };
 
   const processTrendData = () => {
+    // Remap keys to human-friendly labels (same as in processBarData and processComparisonData)
+    const mappedData = rawData.map(item => ({
+      index: (item as any).index,
+      division: (item as any).division,
+      date: (item as any).date,
+      figure: (item as any).figure,
+      DemandNo: (item as any).DemandNo,
+      Target: (item as any).BPfortheMonth,
+      Actual: (item as any).ActualfortheMonthCurrentYear,
+      LFY: (item as any).ActualfortheMonthLastYear,
+      "LFY Actual": (item as any).Actual,
+      "CFY Target": (item as any).RBG,
+      "CFY YTD Target": (item as any).BPtoendofMonth,
+      "CFY YTD Actual": (item as any).ActualtotheEndofMonthCurrentYear,
+      "LFY YTD Actual": (item as any).ActualtoendofMonthLastYear,
+    }));
+
     let filteredDivisionData = defaultCheckBoxMarked
-      ? rawData
-      : rawData.filter((item) => division.includes(item.division));
+      ? mappedData
+      : mappedData.filter((item) => division.includes(item.division));
 
     // Generate all months in the selected range
     const fromDate = new Date(`1 ${trendDateRange.fromMonth} ${trendDateRange.fromYear}`);
@@ -337,7 +411,21 @@ function WorkingExpenditure() {
     }
 
     // Filter and fill missing months for each division
-    const filteredByDateRange = allMonthsInRange.flatMap(month => {
+    const filteredByDateRange: Array<{
+      index: any;
+      division: any;
+      date: any;
+      figure: any;
+      DemandNo: any;
+      Target: any;
+      Actual: any;
+      LFY: any;
+      "LFY Actual": any;
+      "CFY Target": any;
+      "CFY YTD Target": any;
+      "CFY YTD Actual": any;
+      "LFY YTD Actual": any;
+    }> = allMonthsInRange.flatMap(month => {
       const foundData = filteredDivisionData.filter(item => item.date === month);
 
       if (foundData.length > 0) {
@@ -345,23 +433,37 @@ function WorkingExpenditure() {
       }
 
       // Create empty data for missing months for each selected division
+      const emptyDataTemplate = {
+        index: 0,
+        figure: 0,
+        DemandNo: "",
+        Target: 0,
+        Actual: 0,
+        LFY: 0,
+        "LFY Actual": 0,
+        "CFY Target": 0,
+        "CFY YTD Target": 0,
+        "CFY YTD Actual": 0,
+        "LFY YTD Actual": 0,
+      };
+
       return defaultCheckBoxMarked
         ? [{
+            ...emptyDataTemplate,
             date: month,
             division: "NWR", // Use "NWR" as a temporary division for aggregation
-            ...Object.fromEntries(dataType.map(key => [key, 0]))
           }]
         : division.map(div => ({
+            ...emptyDataTemplate,
             date: month,
             division: div,
-            ...Object.fromEntries(dataType.map(key => [key, 0]))
           }));
     });
 
     // Group by month and division
     const groupedByMonth: Record<string, Record<string, any>> = {};
 
-    filteredByDateRange.forEach((item) => {
+    filteredByDateRange.forEach((item: any) => {
       const month = item.date;
       const div = item.division;
 
@@ -371,7 +473,19 @@ function WorkingExpenditure() {
 
       // Process each selected data type for the division
       selectedDataType.forEach(dataType => {
-        const value = (item as any)[dataType];
+        // Map selectedDataType back to the original key names for lookup
+        const originalKeyMap: Record<string, string> = {
+          "BPfortheMonth": "Target",
+          "ActualfortheMonthCurrentYear": "Actual",
+          "ActualfortheMonthLastYear": "LFY",
+          "Actual": "LFY Actual",
+          "RBG": "CFY Target",
+          "BPtoendofMonth": "CFY YTD Target",
+          "ActualtotheEndofMonthCurrentYear": "CFY YTD Actual",
+          "ActualtoendofMonthLastYear": "LFY YTD Actual",
+        };
+        const mappedKey = originalKeyMap[dataType] || dataType;
+        const value = (item as any)[mappedKey];
         if (typeof value === "number") {
           const key = `${div} - ${dataType}`;
           groupedByMonth[month][key] = (groupedByMonth[month][key] || 0) + value; // Summing up in case of multiple entries for the same month/div/datatype
@@ -818,7 +932,7 @@ function WorkingExpenditure() {
                             }}
                           />
                         }
-                        label={formatKeyToLabel(d)}
+                        label={dataTypeDisplayNameMap[d] || formatKeyToLabel(d)}
                         sx={{
                           color: "#fff",
                           fontSize: "0.85rem",
@@ -887,9 +1001,13 @@ function WorkingExpenditure() {
           ) : localData && localData.length > 0 ? (
             <>
               {selectedGraphTab === "Bar" ? (
+
                 <BarGraph data={localData} stackId={false} type={"Expenditure"} />
               ) : selectedGraphTab === "Comparison" ? (
-                <SimpleBarGraph data={localData} graphType={"Expenditure"} />
+                <>
+                  {console.log("Comparison localData:", localData)}
+                  <SimpleBarGraph data={localData} graphType={"Expenditure"} />
+                </>
               ) : (
                 <TrendBarGraph
                   uniqueCategories={uniqueCategories}
