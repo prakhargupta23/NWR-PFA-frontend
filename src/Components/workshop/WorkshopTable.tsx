@@ -122,13 +122,13 @@ const workshopTableConfigs = {
   },
   itemPositioninSuspenseRegister: {
     columns: [
-      'suspenseHeads', 'positionasperLHARitem',
+      'SNo', 'suspenseHeads', 'positionasperLHARitem',
       'positionasperLHARamount', 'openingBalanceitem', 'openingBalanceamount',
       'accretionitem', 'accretionamount', 'clearanceitem', 'clearanceamount',
       'closingBalanceitem', 'closingBalanceamount', 'oldestBalance'
     ],
     labels: [
-      'Suspense Heads', 'Position as per LHAR Item',
+      'SNo', 'Suspense Heads', 'Position as per LHAR Item',
       'Position as per LHAR Amount', 'Opening Balance Item', 'Opening Balance Amount',
       'Accretion Item', 'Accretion Amount', 'Clearance Item', 'Clearance Amount',
       'Closing Balance Item', 'Closing Balance Amount', 'Oldest Balance'
@@ -150,14 +150,14 @@ const workshopTableConfigs = {
   },
   inspectionPara: {
     columns: [
-      'typeOfPara', 'totalNoOfParas',
+      'accretionitem', 'typeOfPara', 'totalNoOfParas',
       'noOfParasOutstandingatStart', 'noOfParasClosed', 'noOfParasOutstandingatEnd',
-      'accretionitem', 'remarks'
+      'remarks'
     ],
     labels: [
-      'Type of Para', 'Total No of Paras',
+      'Year of Report', 'Type of Para', 'Total No of Paras',
       'No of Paras Outstanding at Start', 'No of Paras Closed', 'No of Paras Outstanding at End',
-      'Accretion Item', 'Remarks'
+       'Remarks'
     ]
   },
   outstandingAuditObjection: {

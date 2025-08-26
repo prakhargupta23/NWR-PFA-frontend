@@ -98,6 +98,12 @@ export const parseExcelFile = async (
         positionOfSpotChecking: "Position of Spot Checking",
         statusOfRevisionOfPension: "Status of Rivision of Pension",
         assistanceRequiredFromHO: "Assistance required from HQ",
+        incentivePayment: "Incentive Payment",
+        turnOverRatio: "Turn Over Ratio",
+        onlineBillSubmissionStatus: "Online Bill Submission Status",
+        itImplementationStatus: "IT Implementation Status",
+        scrapSale: "Scrap Sale",
+        workshopManufacturingSuspense: "Workshop Man. Suspense",
 
 
        
@@ -914,6 +920,84 @@ export const parseExcelFile = async (
                 amount: row.e, // Amount
                 year: row.f, // Year
                 totalForHead: row.g, // Total for Head
+            }))
+            : [],
+        incentivePayment: sheets.incentivePayment
+            ? parseSheetWithAlphaKeys(sheets.incentivePayment).map((row) => ({
+                division,
+                date: formattedDate,
+                figure: detectFigureUnit(sheets.incentivePayment),
+                index: row.a,
+                duringTheMonthLastYear: row.b, // Sr
+                upToTheMonthLastYear: row.c, // Suspense Head
+                duringTheMonth: row.d, // Item
+                upToTheMonth: row.e, // Amount 
+                year: row.f, // Year 
+                remarks: row.g, // Remarks
+            }))
+            : [],
+        turnOverRatio: sheets.turnOverRatio
+            ? parseSheetWithAlphaKeys(sheets.turnOverRatio).map((row) => ({
+                division,
+                date: formattedDate,
+                figure: detectFigureUnit(sheets.turnOverRatio),
+                index: row.a,
+                year: row.b, // Sr
+                OB: row.c, // Suspense Head
+                totalCredits: row.d, // Item
+                closingBalance: row.e, // Amount
+                TORAnnualTarget: row.f, // Remarks
+                TORupToMonth: row.g, // Remarks
+            }))
+            : [],
+        onlineBillSubmissionStatus: sheets.onlineBillSubmissionStatus
+            ? parseSheetWithAlphaKeys(sheets.onlineBillSubmissionStatus).map((row) => ({
+                division,
+                date: formattedDate,
+                figure: detectFigureUnit(sheets.onlineBillSubmissionStatus),
+                index: row.a,
+                billType: row.b, // Sr
+                online: row.c, // Suspense Head
+                offline: row.d, // Item
+                total: row.e, // Amount
+                percentage: row.f, // Remarks
+                remarks: row.f, // Remarks
+            }))
+            : [],
+        itImplementationStatus: sheets.itImplementationStatus
+            ? parseSheetWithAlphaKeys(sheets.itImplementationStatus).map((row) => ({
+                division,
+                date: formattedDate,
+                figure: detectFigureUnit(sheets.itImplementationStatus),
+                index: row.a,
+                wams: row.b, // Sr
+                yesorno: row.c, // Suspense Head
+                targetDate: row.d, // Item
+                actionPlanandRemarks: row.e, // Amount 
+            }))
+            : [],
+        scrapSale: sheets.scrapSale
+            ? parseSheetWithAlphaKeys(sheets.scrapSale).map((row) => ({
+                division,
+                date: formattedDate,
+                figure: detectFigureUnit(sheets.scrapSale),
+                index: row.a,
+                target: row.b, // Sr
+                actualDuringTheMonth: row.c, // Suspense Head
+                actualUpToMonth: row.d, // Item
+                actualLastYear: row.e, // Amount 
+                remarks: row.f, // Remarks
+            }))
+            : [],
+        workshopManufacturingSuspense: sheets.workshopManufacturingSuspense 
+            ? parseSheetWithAlphaKeys(sheets.workshopManufacturingSuspense).map((row) => ({
+                division,
+                date: formattedDate,
+                figure: detectFigureUnit(sheets.workshopManufacturingSuspense),
+                index: row.a,
+                foriegnRailwayTransactions: row.b, // Sr
+                duringtheMonth: row.c, // Suspense Head
+                upToMonth: row.d, // Item
             }))
             : [],
   

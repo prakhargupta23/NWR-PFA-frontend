@@ -31,7 +31,7 @@ export function getUserData() {
 
 //// Funciton for creating new experiments ---------------------------/
 async function login(username: string, password: string) {
-  const portal = "expenditure"
+  const portal = "PFA"
   let response = await fetchWrapper.post(`${config.apiUrl}/api/login`, {
     username,
     password,
