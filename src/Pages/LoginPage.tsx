@@ -116,9 +116,15 @@ function LoginPage() {
                   if (response.success) {
                     const { role } = response.data;
                     localStorage.setItem("role", role);
+                    console.log("role",role)
                     setSnackbarOpen(true);
                     setSnackbarMessage("Login successfully");
-                    navigate("/pfa");
+                    if(role === "pfa") {
+                      navigate("/pfa");
+                    } else if(role === "workshop") {
+                      navigate("/workshop");
+                    }
+                    // navigate("/pfa");
                   } else {
                     setSnackbarOpen(true);
                     setSnackbarMessage(`Login unsuccessfull ${response.message}`);
