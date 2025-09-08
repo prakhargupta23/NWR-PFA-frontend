@@ -75,7 +75,7 @@ function LoginPage() {
               gutterBottom
               sx={{ fontWeight: "bold", color: "#fff" }}
             >
-              NWR Pension Portal
+              NWR PFA Portal
             </Typography>
             {/* <Typography
               variant="h3"
