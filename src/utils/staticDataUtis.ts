@@ -8,11 +8,10 @@ export const divisions = [
     name: "Bikaner",
     shades: ["#dadbee", "#b2b5d6", "#8b8fbe", "#6b5b95", "#55497a", "#3f375f"], // Base: #6b5b95
   },
-  {
-    name: "Jaipur",
-    shades: ["#ffe1dd", "#ffb3a7", "#ff8675", "#ff6f61", "#cc594e", "#993f36"], // Base: #ff6f61
-  },
-
+  // {
+  //   name: "Jaipur",
+  //   shades: ["#ffe1dd", "#ffb3a7", "#ff8675", "#ff6f61", "#cc594e", "#993f36"], // Base: #ff6f61
+  // },
   {
     name: "Jodhpur",
     shades: ["#fff2cc", "#ffe199", "#ffd066", "#ffa500", "#cc8400", "#996300"], // Base: #ffa500

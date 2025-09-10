@@ -19,6 +19,7 @@ import { months, years, divisionsName } from "../../utils/staticDataUtis";
 import { WorkshopService } from "../../services/workshop.service";
 
 function PlanHead() {
+  const workshopDivisions = divisionsName.filter((d) => d !== "Jaipur");
   const desiredKeyOrderForComparison = [
     "ActualfortheMonthLastYear",
     "RBG",
@@ -135,7 +136,8 @@ function PlanHead() {
         setLoading(true);
         const response = await WorkshopService.fetchAllDataFromTable("planHead");
         const list = (response && (response.data?.data || response.data)) || [];
-        if (isMounted) setRawData(Array.isArray(list) ? list : []);
+        const filteredList = list.filter((item: any) => item.division !== "Jaipur");
+        if (isMounted) setRawData(Array.isArray(filteredList) ? filteredList : []);
       } catch (e) {
         if (isMounted) setRawData([]);
       } finally {
@@ -217,7 +219,7 @@ function PlanHead() {
       });
     });
 
-    divisionsName.forEach((div) => {
+    workshopDivisions.forEach((div) => {
       if (!groupedData[div]) {
         groupedData[div] = { division: div } as any;
         Array.from(allKeys).forEach((k) => {
@@ -228,8 +230,8 @@ function PlanHead() {
 
     const formattedBarData = Object.values(groupedData).sort((a, b) => {
       return (
-        divisionsName.indexOf((a as any).division) -
-        divisionsName.indexOf((b as any).division)
+        workshopDivisions.indexOf((a as any).division) -
+        workshopDivisions.indexOf((b as any).division)
       );
     });
 
@@ -277,7 +279,7 @@ function PlanHead() {
       })
     );
 
-    const availableDivisions = divisionsName.filter((d) =>
+    const availableDivisions = workshopDivisions.filter((d) =>
       formattedComparisonData.some((item) => Object.prototype.hasOwnProperty.call(item, d))
     );
 
@@ -378,7 +380,7 @@ function PlanHead() {
     if (defaultCheckBoxMarked) {
       allMonthsInRange.forEach((formattedDate) => {
         selectedDataType.forEach((dt) => {
-          const nwrValue = ["Jaipur", "Jodhpur", "Bikaner", "Ajmer"].reduce(
+          const nwrValue = ["Jodhpur", "Bikaner", "Ajmer"].reduce(
             (sum: number, divName) => {
               const key = `${divName} - ${dt}`;
               return sum + (groupedByMonth[formattedDate]?.[key] || 0);
@@ -421,10 +423,10 @@ function PlanHead() {
     let filteredCategoriesSorted = allCategories;
     if (!defaultCheckBoxMarked) {
       filteredCategoriesSorted = allCategories.sort((a, b) => {
-        const divisionA = divisionsName.find((d) => a.includes(d)) ?? "";
-        const divisionB = divisionsName.find((d) => b.includes(d)) ?? "";
+        const divisionA = workshopDivisions.find((d) => a.includes(d)) ?? "";
+        const divisionB = workshopDivisions.find((d) => b.includes(d)) ?? "";
         return (
-          divisionsName.indexOf(divisionA) - divisionsName.indexOf(divisionB)
+          workshopDivisions.indexOf(divisionA) - workshopDivisions.indexOf(divisionB)
         );
       });
     } else {
@@ -636,7 +638,7 @@ function PlanHead() {
                     p: 1,
                     scrollbarColor: "#444 #000",
                   }}>
-                    {[{ name: "NWR" }, ...divisionsName.map(name => ({ name }))].map((d) => (
+                    {[{ name: "NWR" }, ...workshopDivisions.map(name => ({ name }))].map((d) => (
                       <FormControlLabel
                         key={d.name}
                         control={

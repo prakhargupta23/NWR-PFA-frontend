@@ -492,7 +492,7 @@ function WorkshopTable({ selectedTable }: any) {
   console.log("WorkshopTable received selectedTable:", selectedTable);
   
   // state for filters
-  const [division, setDivision] = useState<string>("Jaipur");
+  const [division, setDivision] = useState<string>("Ajmer");
   const [selectedDate, setSelectedDate] = useState({
     month: "January",
     year: new Date().getFullYear().toString(),

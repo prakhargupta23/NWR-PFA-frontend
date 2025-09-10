@@ -22,6 +22,7 @@ import { months, years, divisionsName } from "../../utils/staticDataUtis";
 import { WorkshopService } from "../../services/workshop.service";
 
 function WorkingExpenditure() {
+  const workshopDivisions = divisionsName.filter((d) => d !== "Jaipur");
   const desiredKeyOrderForComparisonForExpenditureEarning = [
     "BPfortheMonth",
     "ActualfortheMonthCurrentYear",
@@ -157,7 +158,10 @@ function WorkingExpenditure() {
         setLoading(true);
         const response = await WorkshopService.fetchAllDataFromTable("workingExpenditure");
         const list = (response && (response.data?.data || response.data)) || [];
-        if (isMounted) setRawData(Array.isArray(list) ? list : []);
+
+        console.log("workingExpenditure dataaaaaaaaaaaaaaaaaaaaaaaaa",list)
+        const filteredList = list.filter((item: any) => item.division !== "Jaipur");
+        if (isMounted) setRawData(Array.isArray(filteredList) ? filteredList : []);
       } catch (e) {
         if (isMounted) setRawData([]);
       } finally {
@@ -168,29 +172,7 @@ function WorkingExpenditure() {
     return () => { isMounted = false; };
   }, [forceReload]);
 
-  useEffect(() => {
-    try {
-      if (selectedGraphTab === "Trend") {
-        processTrendData();
-      } else if (selectedGraphTab === "Bar") {
-        processBarData();
-      } else if (selectedGraphTab === "Comparison") {
-        processComparisonData();
-      }
-    } catch (error) {
-      console.error("Error processing data:", error);
-    }
-  }, [
-    rawData,
-    selectedTab,
-    selectedGraphTab,
-    selectedDate,
-    division,
-    selectedDataType,
-    defaultCheckBoxMarked,
-    trendDateRange,
-    forceReload
-  ]);
+  
 
   const toNumericMonthYear = (monthName: string, year: number | string) => {
     const monthIndex = months.indexOf(monthName) + 1;
@@ -256,7 +238,7 @@ function WorkingExpenditure() {
     });
 
     // Ensure empty slots for all divisions with zero values for missing divisions
-    divisionsName.forEach((div) => {
+    workshopDivisions.forEach((div) => {
       if (!groupedData[div]) {
         groupedData[div] = { division: div } as any;
         Array.from(allKeys).forEach((k) => {
@@ -267,15 +249,44 @@ function WorkingExpenditure() {
 
     const formattedBarData = Object.values(groupedData).sort((a, b) => {
       return (
-        divisionsName.indexOf(a.division) -
-        divisionsName.indexOf(b.division)
+        workshopDivisions.indexOf(a.division) -
+        workshopDivisions.indexOf(b.division)
       );
     });
     console.log("formatted dar data",formattedBarData)
     setUniqueCategories([]);
+    formattedBarData.forEach((item) => {
+      if (item.division === "NWR") {
+        item.division = "NWR";
+      }
+    });
     setLocalData(formattedBarData);
     console.log("local data",localData)
   };
+
+  useEffect(() => {
+    try {
+      if (selectedGraphTab === "Bar") {
+        processBarData();
+      } else if (selectedGraphTab === "Comparison") {
+        processComparisonData();
+      } else if (selectedGraphTab === "Trend") {
+        processTrendData();
+      }
+    } catch (error) {
+      console.error("Error processing data:", error);
+    }
+  }, [
+    rawData,
+    selectedTab,
+    selectedGraphTab,
+    selectedDate,
+    division,
+    selectedDataType,
+    defaultCheckBoxMarked,
+    trendDateRange,
+    forceReload
+  ]);
 
   const processComparisonData = () => {
     // Remap keys to human-friendly labels (same as in processBarData)
@@ -296,7 +307,8 @@ function WorkingExpenditure() {
       "LFY YTD Actual": (item as any).ActualtoendofMonthLastYear,
     }));
 
-    const filteredDataForMonth = mappedData.filter(
+    const filteredData = mappedData.filter((item) => item.division !== "Jaipur");
+    const filteredDataForMonth = filteredData.filter(
       (item) => item.date === selectedMonthYear
     );
 
@@ -340,7 +352,7 @@ function WorkingExpenditure() {
       })
     );
     
-    const availableDivisions = divisionsName.filter((division) =>
+    const availableDivisions = workshopDivisions.filter((division) =>
       formattedComparisonData.some((item) => item.hasOwnProperty(division))
     );
 
@@ -497,7 +509,7 @@ function WorkingExpenditure() {
     if (defaultCheckBoxMarked) {
       allMonthsInRange.forEach((formattedDate) => {
         selectedDataType.forEach(dataTypeKey => {
-          const nwrValue = ['Jaipur', 'Jodhpur', 'Bikaner', 'Ajmer'].reduce((sum: number, divName) => {
+          const nwrValue = ['Jodhpur', 'Bikaner', 'Ajmer'].reduce((sum: number, divName) => {
             const key = `${divName} - ${dataTypeKey}`;
             // Sum the already aggregated division data from groupedByMonth
             return sum + (groupedByMonth[formattedDate]?.[key] || 0);
@@ -512,7 +524,7 @@ function WorkingExpenditure() {
           // Log data for debugging
           console.log(
             `Month: ${formattedDate}, Data Type: ${dataTypeKey}, NWR Total: ${nwrValue}`,
-            `Divisions: Jaipur - ${groupedByMonth[formattedDate]?.['Jaipur - ' + dataTypeKey] || 0}, `,
+            `Divisions: Jodhpur - ${groupedByMonth[formattedDate]?.['Jodhpur - ' + dataTypeKey] || 0}, `,
             `Jodhpur - ${groupedByMonth[formattedDate]?.['Jodhpur - ' + dataTypeKey] || 0}, `,
             `Bikaner - ${groupedByMonth[formattedDate]?.['Bikaner - ' + dataTypeKey] || 0}, `,
             `Ajmer - ${groupedByMonth[formattedDate]?.['Ajmer - ' + dataTypeKey] || 0}`
@@ -547,9 +559,9 @@ function WorkingExpenditure() {
     let filteredCategoriesSorted = allCategories;
     if (!defaultCheckBoxMarked) {
       filteredCategoriesSorted = allCategories.sort((a, b) => {
-        const divisionA = divisionsName.find(d => a.includes(d)) ?? "";
-        const divisionB = divisionsName.find(d => b.includes(d)) ?? "";
-        return divisionsName.indexOf(divisionA) - divisionsName.indexOf(divisionB);
+        const divisionA = workshopDivisions.find(d => a.includes(d)) ?? "";
+        const divisionB = workshopDivisions.find(d => b.includes(d)) ?? "";
+        return workshopDivisions.indexOf(divisionA) - workshopDivisions.indexOf(divisionB);
       });
     } else {
        // If NWR is selected, sort to place NWR categories at the end
@@ -867,7 +879,7 @@ function WorkingExpenditure() {
                     p: 1,
                     scrollbarColor: "#444 #000",
                   }}>
-                    {[{ name: "NWR" }, ...divisionsName.map(name => ({ name }))].map((d) => (
+                    {[{ name: "NWR" }, ...workshopDivisions.map(name => ({ name }))].map((d) => (
                       <FormControlLabel
                         key={d.name}
                         control={

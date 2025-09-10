@@ -426,7 +426,7 @@ const TransactionModal = ({
                 <MenuItem value="" disabled>
                   Division
                 </MenuItem>
-                {(role === "mainAdmin"
+                {(role === "workshop"
                   ? divisions
                   : divisions.filter((d) => d.name === role)
                 ).map((d) => (
