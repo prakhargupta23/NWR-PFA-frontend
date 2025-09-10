@@ -18,7 +18,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import { Download, Upload } from "@mui/icons-material";
 import { WorkshopService } from "../services/workshop.service";
 import { parseExcelFile } from "../utils/WorkshopUtils";
-import { divisions, months, sectionsForComment } from "../utils/staticDataUtis";
+import { workshopDivisions, months, sectionsForComment } from "../utils/staticDataUtis";
 import "react-quill/dist/quill.snow.css"; // Import styles
 import CommentEditor from "./Comment";
 import { commentService } from "../services/comment.service";
@@ -427,8 +427,8 @@ const TransactionModal = ({
                   Division
                 </MenuItem>
                 {(role === "workshop"
-                  ? divisions
-                  : divisions.filter((d) => d.name === role)
+                  ? workshopDivisions
+                  : workshopDivisions.filter((d) => d.name === role)
                 ).map((d) => (
                   <MenuItem
                     key={d.name}

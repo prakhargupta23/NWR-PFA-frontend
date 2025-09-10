@@ -16,7 +16,7 @@ import {
   TableBody,
 } from "@mui/material";
 import { formatHeader, getMonthYear } from "../../utils/otherUtils";
-import { divisions, months, years } from "../../utils/staticDataUtis";
+import { workshopDivisions, months, years } from "../../utils/staticDataUtis";
 import { transactionService } from "../../services/transaction.service";
 import { WorkshopService }  from "../../services/workshop.service";
 import { Label } from "recharts";
@@ -697,7 +697,7 @@ function WorkshopTable({ selectedTable }: any) {
                 },
               }}
             >
-              {divisions.map((d, index) => (
+              {workshopDivisions.map((d, index) => (
                 <MenuItem key={index} value={d.name}>
                   {d.name}
                 </MenuItem>
