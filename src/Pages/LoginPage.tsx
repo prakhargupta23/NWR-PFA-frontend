@@ -119,10 +119,11 @@ function LoginPage() {
                     console.log("role",role)
                     setSnackbarOpen(true);
                     setSnackbarMessage("Login successfully");
-                    if(role === "pfa") {
-                      navigate("/pfa");
-                    } else if(role === "workshop") {
+                    if(role === "workshop") {
+                      console.log("workshop",role)
                       navigate("/workshop");
+                    } else {
+                      navigate("/pfa");
                     }
                     // navigate("/pfa");
                   } else {
