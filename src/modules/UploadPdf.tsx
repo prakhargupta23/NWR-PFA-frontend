@@ -22,6 +22,7 @@ async function uploadPDFOnAzure(file: File): Promise<any> {
     const storageAccount = accountDetails.storageAccount;
     const sasToken = accountDetails.sasToken;
     const containerName = "nwr";
+    console.log("You there?",sasToken);
 
     const blobName = `pdfs/${Date.now()}-${file.name}`;
     const blobUrl = `https://${storageAccount}.blob.core.windows.net/${containerName}/${blobName}?${sasToken}`;

@@ -10,35 +10,132 @@ import {
   CircularProgress,
 } from "@mui/material";
 
+import PFADeskPDFUploadButton from "./UploadPFAdeskPdf";
+
 interface NewsItem {
   title: string;
   description: string;
   source: string;
   publishedAt: string;
   link: string;
+  comment?: string;
 }
 
 const NewsFeed: React.FC = () => {
   const [news, setNews] = useState<NewsItem[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
 
+  function getIndianDateTime(timestampStr: string): string {
+    const timestamp = Number(timestampStr);
+    return new Date(timestamp).toLocaleString("en-IN", {
+      timeZone: "Asia/Kolkata",
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+    });
+  }
+
+  const downloadAndOpenPdf = async (pdfUrl: string, fileName: string) => {
+    try {
+      const response = await fetch(pdfUrl);
+      if (!response.ok) throw new Error("Failed to fetch PDF");
+
+      const blob = await response.blob();
+      const objectUrl = URL.createObjectURL(blob);
+
+      // 1️⃣ Open in new tab
+      window.open(objectUrl, "_blank");
+
+      // 2️⃣ Trigger download
+      const link = document.createElement("a");
+      link.href = objectUrl;
+      link.download = fileName.endsWith(".pdf") ? fileName : `${fileName}.pdf`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
+      setTimeout(() => URL.revokeObjectURL(objectUrl), 5000);
+    } catch (err) {
+      console.error("Error opening/downloading PDF:", err);
+    }
+  };
+
   useEffect(() => {
     const fetchNews = async () => {
       try {
-        const response = await fetch(
-          `https://api.thenewsapi.com/v1/news/all?api_token=j4YeXQmMNtWhsobLh7Uqe7LdyRustvLb6HBWyW1x&search=%22Indian%20Railways%22%20OR%20IRCTC&language=en&limit=10`
-        );
-        const data = await response.json();
+        const baseUrl = "https://nwrstorage.blob.core.windows.net/nwr";
+        const sasToken =
+          "?sp=racwdl&st=2025-09-18T09:26:40Z&se=2025-10-31T17:41:40Z&spr=https&sv=2024-11-04&sr=c&sig=oymY7w5RPd2IkQgz7Dsj2fb9bH%2FJN94h0CrLxwUO8Rw%3D";
 
-        const formattedNews = data.data.map((item: any) => ({
-          title: item.title,
-          description: item.description,
-          source: item.source,
-          publishedAt: new Date(item.published_at).toDateString(),
-          link: item.url,
-        }));
+        const containerUrl = `${baseUrl}?restype=container&comp=list&${sasToken.replace(
+          /^\?/,
+          ""
+        )}`;
+        const response = await fetch(containerUrl);
+        const text = await response.text();
 
-        setNews(formattedNews);
+        const results: NewsItem[] = [];
+        const parser = new DOMParser();
+        const xmlDoc = parser.parseFromString(text, "application/xml");
+        const blobs = xmlDoc.getElementsByTagName("Name");
+
+        let urls: string[] = [];
+        for (let i = 0; i < blobs.length; i++) {
+          urls.push(
+            `${baseUrl}/${blobs[i].textContent}?${sasToken.replace(
+              /^\?/,
+              ""
+            )}`
+          );
+        }
+        urls.reverse();
+
+        console.log("urls", urls)
+
+        for (let url of urls) {
+          const fileName = url.split("/").pop() || "";
+          // console.log("filename", fileName)
+          const originalName1 = fileName.substring(fileName.indexOf("-") + 1);
+          // console.log("originalname", originalName1)
+          const originalName = originalName1.split("?")[0];
+          // console.log("name",originalName)
+          const publishedAt = fileName.split("-")[0] ?? "";
+
+          const [blobUrl, queryString] = url.split("?");
+          const metadataUrl = `${blobUrl}?comp=metadata&${queryString}`;
+
+          const metadataResponse = await fetch(metadataUrl, {
+            method: "HEAD", // 🔥 better to use HEAD
+            headers: {
+              "x-ms-version": "2020-10-02",
+            },
+          });
+
+          let comment: string | undefined = undefined;
+          if (metadataResponse.ok) {
+            // Azure always stores metadata keys in lowercase
+            const metaComment = metadataResponse.headers.get("x-ms-meta-comment");
+            if (metaComment) comment = decodeURIComponent(metaComment);
+          }
+
+          console.log("metadta",comment)
+
+          results.push({
+            title: originalName,
+            publishedAt: getIndianDateTime(publishedAt),
+            description: "",
+            source: "",
+            link: url,
+            comment,
+          });
+        }
+
+        console.log("results", results)
+
+        setNews(results);
       } catch (error) {
         console.error("Error fetching news:", error);
       } finally {
@@ -62,10 +159,20 @@ const NewsFeed: React.FC = () => {
         boxSizing: "border-box",
       }}
     >
-      <Box sx={{ py: 2, borderBottom: "1px solid rgba(255,255,255,0.2)" }}>
+      <Box
+        sx={{
+          px: 2,
+          py: 1,
+          borderBottom: "1px solid rgba(255,255,255,0.2)",
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+        }}
+      >
         <Typography variant="h6" sx={{ textAlign: "center", color: "white" }}>
-          News Feed
+          PFA Desk
         </Typography>
+        <PFADeskPDFUploadButton />
       </Box>
 
       <List
@@ -103,10 +210,8 @@ const NewsFeed: React.FC = () => {
                     <Typography
                       variant="subtitle1"
                       fontWeight={600}
-                      component="a"
-                      href={item.link}
-                      target="_blank"
-                      rel="noopener noreferrer"
+                      component="span"
+                      onClick={() => downloadAndOpenPdf(item.link, item.title)}
                       sx={{
                         textDecoration: "underline",
                         color: "white",
@@ -119,25 +224,15 @@ const NewsFeed: React.FC = () => {
                       {item.title}
                     </Typography>
 
-                    {/* <Typography
-                      variant="caption"
-                      sx={{
-                        display: "block",
-                        color: "#aaa",
-                        mt: 0.5,
-                        wordBreak: "break-all",
-                      }}
-                    >
-                      {item.link}
-                    </Typography> */}
-
-                    <Typography
-                      variant="body2"
-                      color="rgba(255,255,255,0.8)"
-                      sx={{ mt: 1 }}
-                    >
-                      {item.description}
-                    </Typography>
+                    {item.comment && (
+                      <Typography
+                        variant="body2"
+                        color="rgba(255,255,255,0.8)"
+                        sx={{ mt: 1 }}
+                      >
+                        {item.comment}
+                      </Typography>
+                    )}
 
                     <Typography
                       variant="caption"
@@ -147,7 +242,7 @@ const NewsFeed: React.FC = () => {
                         color: "rgba(255,255,255,0.5)",
                       }}
                     >
-                      {item.source} • {item.publishedAt}
+                      {item.publishedAt}
                     </Typography>
                   </CardContent>
                 </Card>

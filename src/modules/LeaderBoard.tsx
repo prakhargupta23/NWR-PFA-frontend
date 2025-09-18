@@ -102,7 +102,7 @@ const LeaderBoard: React.FC<DivisionPerformanceTableProps> = ({
     <TableContainer
       component={Paper}
       sx={{
-        background: "rgba(255, 255, 255, 0.3)",
+        background: "rgba(255, 255, 255, 0.5)",
         height: "100%",
         display: "flex",
         flexDirection: "column",
