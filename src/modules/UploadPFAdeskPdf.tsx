@@ -59,7 +59,11 @@ async function uploadPDFOnAzure(file: File, comment: string): Promise<string | n
   }
 }
 
-const PFADeskPDFUploadButton: React.FC = () => {
+type PFADeskPDFUploadButtonProps = {
+  onUploaded?: () => void;
+};
+
+const PFADeskPDFUploadButton: React.FC<PFADeskPDFUploadButtonProps> = ({ onUploaded }) => {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [loading, setLoading] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -108,6 +112,9 @@ const PFADeskPDFUploadButton: React.FC = () => {
           message: "PDF uploaded successfully!",
           severity: "success",
         });
+        if (onUploaded) {
+          onUploaded();
+        }
       } else {
         setSnackbar({
           open: true,

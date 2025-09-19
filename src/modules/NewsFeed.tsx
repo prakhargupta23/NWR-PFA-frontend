@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import {
   Box,
   Typography,
@@ -63,8 +63,7 @@ const NewsFeed: React.FC = () => {
     }
   };
 
-  useEffect(() => {
-    const fetchNews = async () => {
+  const fetchNews = useCallback(async () => {
       try {
         const baseUrl = "https://nwrstorage.blob.core.windows.net/nwr";
         const sasToken =
@@ -141,10 +140,12 @@ const NewsFeed: React.FC = () => {
       } finally {
         setLoading(false);
       }
-    };
-
-    fetchNews();
   }, []);
+
+  useEffect(() => {
+    setLoading(true);
+    fetchNews();
+  }, [fetchNews]);
 
   return (
     <Box
@@ -172,7 +173,10 @@ const NewsFeed: React.FC = () => {
         <Typography variant="h6" sx={{ textAlign: "center", color: "white" }}>
           PFA Desk
         </Typography>
-        <PFADeskPDFUploadButton />
+        <PFADeskPDFUploadButton onUploaded={() => {
+          setLoading(true);
+          fetchNews();
+        }} />
       </Box>
 
       <List
