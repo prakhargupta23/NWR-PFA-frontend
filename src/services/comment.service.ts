@@ -6,9 +6,21 @@ export const commentService = {
   uploadCommentData,
 };
 
+export const WorkshopComentService = {
+  uploadWorkshopComments,
+}
+
+async function uploadWorkshopComments(data: any){
+  return fetchWrapper.post(`${config.apiUrl}/api/update-workshop-comment`,{
+    data,
+  })
+}
+
+
+
 //// Funciton for fetching all the experiments ---------------------------/
 async function uploadCommentData(data: any) {
-  return fetchWrapper.post(`${config.apiUrl}/api/update-comment`, {
+  return fetchWrapper.post(`${config.apiUrl}/api/update-comment`, { 
     data,
   });
 }

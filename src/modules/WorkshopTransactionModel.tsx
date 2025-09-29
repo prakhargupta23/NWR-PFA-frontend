@@ -16,12 +16,12 @@ import {
 import UploadIcon from "@mui/icons-material/Upload";
 import CloseIcon from "@mui/icons-material/Close";
 import { Download, Upload } from "@mui/icons-material";
-import { WorkshopService } from "../services/workshop.service";
-import { parseExcelFile } from "../utils/WorkshopUtils";
-import { workshopDivisions, months, sectionsForWorkshopComment } from "../utils/staticDataUtis";
+import { transactionService } from "../services/transaction.service";
+import { parseExcelFile } from "../utils/otherUtils";
+import { divisions, months, sectionsForComment } from "../utils/staticDataUtis";
 import "react-quill/dist/quill.snow.css"; // Import styles
 import CommentEditor from "./WorkshopComment";
-// import { commentService } from "../services/comment.service";
+import { WorkshopComentService } from "../services/comment.service";
 
 const years = Array.from({ length: 2026 - 2000 }, (_, i) => 2000 + i);
 
@@ -49,7 +49,7 @@ const TransactionModal = ({
     commutation: null,
   });
   const [data, setData] = useState<{ content: string; tableName: string }[]>(
-    sectionsForWorkshopComment.map((section) => ({ content: "", tableName: section }))
+    sectionsForComment.map((section) => ({ content: "", tableName: section }))
   );
   const handleOpen = () => setOpen(true);
   const handleRecoverableModalOpen = () => setFirstModalOpen(true);
@@ -81,7 +81,6 @@ const TransactionModal = ({
         setSnackbarOpen(true);
         return;
       }
-      console.log("dsjfbdjs,",files.Transaction)
 
       setCsvLoading(true);
 
@@ -98,22 +97,24 @@ const TransactionModal = ({
 
         console.log("this is final data", finalData);
 
-        const [uploadResponse] = await Promise.all([
-          WorkshopService.uploadWorkshopData(finalData),
+        const [uploadResponse, commentResponse] = await Promise.all([
+          transactionService.uploadTransactionData(finalData),
+          WorkshopComentService.uploadWorkshopComments(enrichedData),
         ]);
-        // const uploadResponse = true;
 
-        if (uploadResponse) {
+        if (uploadResponse.success && commentResponse.success) {
           setSnackbarMessage("Files uploaded and parsed successfully!");
           setSnackbarOpen(true);
           setFiles({ Transaction: null });
           setMonth("");
-          setYear("");  
+          setYear("");
           setDivision("");
           handleClose();
           setReloadGraph(!reloadGraph);
         } else {
-          setSnackbarMessage("Failed to upload files. Please check the data format.");
+          setSnackbarMessage(
+            "Failed to upload files. Please check the data format."
+          );
           setSnackbarOpen(true);
         }
         setCsvLoading(false);
@@ -426,9 +427,9 @@ const TransactionModal = ({
                 <MenuItem value="" disabled>
                   Division
                 </MenuItem>
-                {(role === "workshop"
-                  ? workshopDivisions
-                  : workshopDivisions.filter((d) => d.name === role)
+                {(role === "mainAdmin"
+                  ? divisions
+                  : divisions.filter((d) => d.name === role)
                 ).map((d) => (
                   <MenuItem
                     key={d.name}

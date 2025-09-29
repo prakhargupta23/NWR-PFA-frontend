@@ -4,6 +4,7 @@ import { getUserData } from "./user.service";
 
 /// Exporting all the function for the ab testing -----------------------/
 export const transactionService = {
+  
   uploadTransactionData,
   getTransactionBarData,
   getTransactionDocData,

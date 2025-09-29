@@ -20,7 +20,7 @@ import { Upload, Download, Menu as MenuIcon } from "@mui/icons-material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useNavigate } from "react-router-dom";
 import { userSubject } from "../services/user.service";
-import TransactionModal from "./TransactionModel";
+import TransactionModal from "./WorkshopTransactionModel";
 // import DownloadSheetsDoc from "./SheetDataDownload";
 // import PDFUploadButton from "./UploadPdf";
 import UploadWorkshopData from "./UploadWorkshopData";
