@@ -29,7 +29,7 @@ import { set } from "lodash";
 import { color, motion } from "framer-motion";
 import { userInfo } from "os";
 import { generatePrompt } from "../utils/otherUtils";
-import AudioRecorder from "./text_recognition";
+// import AudioRecorder from "./text_recognition";
 
 // const suggestions = [
 //   "Show total unlinked payments for last month",
@@ -419,9 +419,9 @@ export default function ChatInterface({ fullNavBar, pageNmae }: any) {
                   />
 
                   {/* Right Send Button Outside the Inner Box */}
-                  <Box sx={{ display: "flex", alignItems: "center", ml: 1 }}>
+                  {/* <Box sx={{ display: "flex", alignItems: "center", ml: 1 }}>
                     <AudioRecorder />
-                  </Box>
+                  </Box> */}
                   <IconButton
                     onClick={handleSendMessage}
                     sx={{
@@ -684,9 +684,9 @@ export default function ChatInterface({ fullNavBar, pageNmae }: any) {
                 />
 
                 {/* Right Send Button Outside the Inner Box */}
-                <Box sx={{ display: "flex", alignItems: "center", ml: 1 }}>
+                {/* <Box sx={{ display: "flex", alignItems: "center", ml: 1 }}>
                   <AudioRecorder />
-                </Box>
+                </Box> */}
                 <IconButton
                   onClick={handleSendMessage}
                   sx={{
