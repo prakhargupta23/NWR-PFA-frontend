@@ -65,9 +65,9 @@ const NewsFeed: React.FC = () => {
 
   const fetchNews = useCallback(async () => {
       try {
-        const baseUrl = "https://nwrstorage.blob.core.windows.net/nwr";
+        const baseUrl = "https://pfadesk.blob.core.windows.net/nwr";
         const sasToken =
-          "?sp=racwdl&st=2025-09-18T09:26:40Z&se=2025-10-31T17:41:40Z&spr=https&sv=2024-11-04&sr=c&sig=oymY7w5RPd2IkQgz7Dsj2fb9bH%2FJN94h0CrLxwUO8Rw%3D";
+          "sp=rw&st=2025-12-01T08:17:09Z&se=2025-12-31T16:32:09Z&spr=https&sv=2024-11-04&sr=c&sig=bim3iwFS0tD%2F7cng0CMNw6i6wzHQMr3i5JLjHd6hQKc%3D";
 
         const containerUrl = `${baseUrl}?restype=container&comp=list&${sasToken.replace(
           /^\?/,
