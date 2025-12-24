@@ -59,6 +59,6 @@ async function getTransactionDocData(
 //// Function for getting the pfa report data ------------------------------------------/
 async function getReportData(date: any) {
   const data = await getUserData();
-  console.log("user data",data.username)
+  console.log("user data",data.username,date)
   return fetchWrapper.get(`${config.apiUrl}/api/get-report-data?date=${date}&username=${data.username}`);
 }
