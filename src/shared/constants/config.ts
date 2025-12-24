@@ -2,8 +2,8 @@
 
 const dev = Object.freeze({
   //apiUrl: "https://nwr-pension-2025.azurewebsites.net",
-  apiUrl: "https://railwaysbackend-d9fycvhce4gvhugv.centralindia-01.azurewebsites.net",
-  
+  //apiUrl: "https://railwaysbackend-d9fycvhce4gvhugv.centralindia-01.azurewebsites.net",
+  apiUrl: "https://backendnwr.azurewebsites.net",  
   //apiUrl: "http://localhost:7071",
 });
 
