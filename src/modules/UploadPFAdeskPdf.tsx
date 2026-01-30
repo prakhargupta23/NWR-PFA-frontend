@@ -15,9 +15,9 @@ import UploadIcon from "@mui/icons-material/Upload";
 // Upload PDF to Azure Blob with comment metadata
 async function uploadPDFOnAzure(file: File, comment: string): Promise<string | null> {
   try {
-    const baseUrl = "https://nwrstorage.blob.core.windows.net/nwr";
+    const baseUrl = "https://nwrstorage.blob.core.windows.net/nwr?sp=racwdl&st=2026-01-30T01:25:00Z&se=2027-01-31T09:40:00Z&spr=https&sv=2024-11-04&sr=c&sig=cZ6L3ycFi%2FCm7CfSwgzAa%2BVvzjpCv8FU%2F%2FfUXjebcTI%3D";
     const sasToken =
-      "?sp=racwdl&st=2025-09-18T09:26:40Z&se=2025-10-31T17:41:40Z&spr=https&sv=2024-11-04&sr=c&sig=oymY7w5RPd2IkQgz7Dsj2fb9bH%2FJN94h0CrLxwUO8Rw%3D";
+      "sp=racwdl&st=2026-01-30T01:25:00Z&se=2027-01-31T09:40:00Z&spr=https&sv=2024-11-04&sr=c&sig=cZ6L3ycFi%2FCm7CfSwgzAa%2BVvzjpCv8FU%2F%2FfUXjebcTI%3D";
 
     const blobName = `${Date.now()}-${file.name}`;
     const blobUrl = `${baseUrl}/${blobName}${sasToken}`;
