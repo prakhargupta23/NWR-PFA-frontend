@@ -72,7 +72,8 @@ export const months = [
   "November",
   "December",
 ];
-export const years = Array.from({ length: 2026 - 2000 }, (_, i) => 2000 + i);
+const currentYear = new Date().getFullYear();
+export const years = Array.from({ length: currentYear - 2000 +1 }, (_, i) => 2000 + i);
 export const sectionsForWorkshopComment = [
     "Working Expenditure",
     "Plan Head",
