@@ -87,7 +87,14 @@ const months = [
   "November",
   "December",
 ];
-const years = Array.from({ length: 96 }, (_, i) => 1930 + i);
+//const years = Array.from({ length: 96 }, (_, i) => 1930 + i);
+const startYear = 2000;
+const currentYear = new Date().getFullYear();
+
+export const years = Array.from(
+  { length: currentYear - startYear + 1 },
+  (_, i) => startYear + i
+);
 export const CsvModal: React.FC<CsvModalProps> = ({
   openCsvModal,
   setOpenCsvModal,

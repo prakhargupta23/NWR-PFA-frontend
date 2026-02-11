@@ -1,0 +1,20 @@
+[1mdiff --git a/src/modules/CsvModal.tsx b/src/modules/CsvModal.tsx[m
+[1mindex 9b57969..f3ef0d2 100644[m
+[1m--- a/src/modules/CsvModal.tsx[m
+[1m+++ b/src/modules/CsvModal.tsx[m
+[36m@@ -87,7 +87,14 @@[m [mconst months = [[m
+   "November",[m
+   "December",[m
+ ];[m
+[31m-const years = Array.from({ length: 96 }, (_, i) => 1930 + i);[m
+[32m+[m[32m//const years = Array.from({ length: 96 }, (_, i) => 1930 + i);[m
+[32m+[m[32mconst startYear = 2000;[m
+[32m+[m[32mconst currentYear = new Date().getFullYear();[m
+[32m+[m
+[32m+[m[32mconst years = Array.from([m
+[32m+[m[32m  { length: currentYear - startYear + 1 },[m
+[32m+[m[32m  (_, i) => startYear + i[m
+[32m+[m[32m);[m
+ export const CsvModal: React.FC<CsvModalProps> = ({[m
+   openCsvModal,[m
+   setOpenCsvModal,[m
