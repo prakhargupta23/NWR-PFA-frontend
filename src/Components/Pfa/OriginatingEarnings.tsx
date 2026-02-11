@@ -48,7 +48,14 @@ const MONTHS = [
   "July", "August", "September", "October", "November", "December"
 ];
 
-const YEARS = ["2023", "2024", "2025"];
+//const YEARS = ["2023", "2024", "2025"];
+const startYear = 2000;
+const currentYear = new Date().getFullYear();
+
+const YEARS = Array.from(
+  { length: currentYear - startYear + 1 },
+  (_, i) => startYear + i
+);
 
 const METRICS = ["Pass","OCH", "Goods", "Sundry"];
 
@@ -69,7 +76,7 @@ const OriginatingEarnings: React.FC<OriginatingEarningsProps> = ({ getDivisionNa
   //for data view
   const [view, setView] = useState<'data' | 'trend'>('data');
   const [selectedMonth, setSelectedMonth] = useState<string>("January");
-  const [selectedYear, setSelectedYear] = useState<string>("2025");
+  const [selectedYear, setSelectedYear] = useState<string>(currentYear.toString());
   const [selectedMetric, setSelectedMetric] = useState<string>("Pass");
   const [performanceData, setPerformanceData] = useState<PerformanceData[]>([]);
   const [loading, setLoading] = useState<boolean>(false);

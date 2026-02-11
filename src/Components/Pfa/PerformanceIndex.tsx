@@ -62,7 +62,14 @@ const MONTHS = [
   "December",
 ];
 
-const YEARS = ["2023", "2024", "2025"];
+//const YEARS = ["2023", "2024", "2025"];
+const startYear = 2000;
+const currentYear = new Date().getFullYear();
+
+const YEARS = Array.from(
+  { length: currentYear - startYear + 1 },
+  (_, i) => startYear + i
+);
 
 const METRICS = ["EARNINGS", "EXPENDITURE", "PEI (%)"];
 

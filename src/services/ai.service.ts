@@ -18,6 +18,9 @@ async function getChatResponse(
   pageName: string,
   threadId?: string
 ) {
+  console.log("query", query);
+  console.log("pageName", pageName);
+  console.log("threadId", threadId);
   return fetchWrapper.post(
     `${config.apiUrl}/api/get-final-result?pageName=${pageName}`,
     {
