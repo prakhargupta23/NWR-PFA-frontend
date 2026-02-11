@@ -31,6 +31,7 @@ import {
 } from 'chart.js';
 import { fetchPerformanceData, fetchVarianceData, PerformanceData } from '../../services/performanceService';
 import { divisionsName } from "../../utils/staticDataUtis";
+import { config } from "../../shared/constants/config";
 
 ChartJS.register(
   CategoryScale,
@@ -48,6 +49,7 @@ const MONTHS = [
   "July", "August", "September", "October", "November", "December"
 ];
 
+
 //const YEARS = ["2023", "2024", "2025"];
 const startYear = 2000;
 const currentYear = new Date().getFullYear();
@@ -56,6 +58,7 @@ const YEARS = Array.from(
   { length: currentYear - startYear + 1 },
   (_, i) => startYear + i
 );
+
 
 const METRICS = ["Pass","OCH", "Goods", "Sundry"];
 
@@ -76,7 +79,9 @@ const OriginatingEarnings: React.FC<OriginatingEarningsProps> = ({ getDivisionNa
   //for data view
   const [view, setView] = useState<'data' | 'trend'>('data');
   const [selectedMonth, setSelectedMonth] = useState<string>("January");
+
   const [selectedYear, setSelectedYear] = useState<string>(currentYear.toString());
+
   const [selectedMetric, setSelectedMetric] = useState<string>("Pass");
   const [performanceData, setPerformanceData] = useState<PerformanceData[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
@@ -92,9 +97,9 @@ const OriginatingEarnings: React.FC<OriginatingEarningsProps> = ({ getDivisionNa
 
   // Date range for variance
   const [fromMonth, setFromMonth] = useState<string>("January");
-  const [fromYear, setFromYear] = useState<string>("2025");
+  const [fromYear, setFromYear] = useState<string>(CURRENT_YEAR.toString());
   const [toMonth, setToMonth] = useState<string>("April");
-  const [toYear, setToYear] = useState<string>("2025");
+  const [toYear, setToYear] = useState<string>(CURRENT_YEAR.toString());
 
   const [showNWR, setShowNWR] = useState<boolean>(true);
 
@@ -218,7 +223,7 @@ const OriginatingEarnings: React.FC<OriginatingEarningsProps> = ({ getDivisionNa
         
         const type="Earning"
         const response = await fetch(
-          `https://nwr-pension-2025.azurewebsites.net/api/get-transaction-data?type=${type}`
+          `${config.apiUrl}/api/get-transaction-data?type=${type}`
         );
         
         if (!response.ok) {
@@ -511,7 +516,7 @@ const OriginatingEarnings: React.FC<OriginatingEarningsProps> = ({ getDivisionNa
       
       // Fetch all data at once
       const response = await fetch(
-        `https://nwr-pension-2025.azurewebsites.net/api/get-transaction-data?type=${type}`
+        `${config.apiUrl}/api/get-transaction-data?type=${type}`
       );
       
       if (!response.ok) {

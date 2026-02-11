@@ -35,6 +35,7 @@ import {
   PerformanceData,
 } from "../../services/performanceService";
 import { divisionsName } from "../../utils/staticDataUtis";
+import { config } from "../../shared/constants/config";
 
 ChartJS.register(
   CategoryScale,
@@ -62,6 +63,7 @@ const MONTHS = [
   "December",
 ];
 
+
 //const YEARS = ["2023", "2024", "2025"];
 const startYear = 2000;
 const currentYear = new Date().getFullYear();
@@ -70,6 +72,7 @@ const YEARS = Array.from(
   { length: currentYear - startYear + 1 },
   (_, i) => startYear + i
 );
+
 
 const METRICS = ["EARNINGS", "EXPENDITURE", "PEI (%)"];
 
@@ -93,7 +96,7 @@ const PerformanceIndex: React.FC<PerformanceIndexProps> = ({
   //for data view
   const [view, setView] = useState<"data" | "trend">("data");
   const [selectedMonth, setSelectedMonth] = useState<string>("January");
-  const [selectedYear, setSelectedYear] = useState<string>("2025");
+  const [selectedYear, setSelectedYear] = useState<string>(CURRENT_YEAR.toString());
   const [selectedMetric, setSelectedMetric] = useState<string>("EARNINGS");
   const [performanceData, setPerformanceData] = useState<PerformanceData[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
@@ -115,9 +118,9 @@ const PerformanceIndex: React.FC<PerformanceIndexProps> = ({
 
   // Date range for trend
   const [fromMonth, setFromMonth] = useState<string>("January");
-  const [fromYear, setFromYear] = useState<string>("2025");
+  const [fromYear, setFromYear] = useState<string>(CURRENT_YEAR.toString());
   const [toMonth, setToMonth] = useState<string>("April");
-  const [toYear, setToYear] = useState<string>("2025");
+  const [toYear, setToYear] = useState<string>(CURRENT_YEAR.toString());
 
   const [showNWR, setShowNWR] = useState<boolean>(true);
 
@@ -253,7 +256,7 @@ const PerformanceIndex: React.FC<PerformanceIndexProps> = ({
             : "pei";
 
         const response = await fetch(
-          `https://nwr-pension-2025.azurewebsites.net/api/get-performanceindex-data`
+          `${config.apiUrl}/api/get-performanceindex-data`
         );
 
         if (!response.ok) {
@@ -595,7 +598,7 @@ const PerformanceIndex: React.FC<PerformanceIndexProps> = ({
 
       // Fetch all data at once
       const response = await fetch(
-        `https://nwr-pension-2025.azurewebsites.net/api/get-performanceindex-data`
+        `${config.apiUrl}/api/get-performanceindex-data`
       );
 
       if (!response.ok) {
